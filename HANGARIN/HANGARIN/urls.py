@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from hangarinorg.views import TaskListView
+from hangarinorg import views
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.TaskListView.as_view(),name='index'),
 ]
