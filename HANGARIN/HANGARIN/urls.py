@@ -21,7 +21,13 @@ from hangarinorg.views import TaskListView
 from hangarinorg import views
 
 
+from django.contrib import admin
+from django.urls import path
+from hangarinorg import views  # or wherever your views are
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.TaskListView.as_view(),name='index'),
+    path('', views.TaskListView.as_view(), name='index'),  # Your existing home
+    path('category/<int:category_id>/tasks/', views.CategoryTaskListView.as_view(), name='category_tasks'),
+    path('category/create/', views.CategoryCreateView.as_view(), name='category_create'),
 ]
