@@ -6,3 +6,4 @@ class TaskListView(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
+
