@@ -2,12 +2,13 @@ from django.shortcuts import render
 from django.views.generic import ListView, CreateView  # Fixed import
 from django.views.generic.edit import UpdateView, DeleteView  # Alternative
 from django.urls import reverse_lazy
-from hangarinorg.models import Task, Category
+from hangarinorg.models import Task, Category, Subtask
 
 class TaskListView(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,9 +33,23 @@ class CategoryCreateView(CreateView):
     model = Category
     fields = ['name']
     template_name = 'category_form.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('dashboard')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         return context
+
+
+class SubtaskCreateView(CreateView):
+    model = Subtask
+    fields = ['title']
+    template_name='subtasks.html'
+    success_url=reverse_lazy('dashboard')
+    
+    def get_context_data(self,**kwargs):
+        context=super().get_context_data(**kwargs)
+        context['subtasks']=Subtask.objects.all()
+        return context
+
+

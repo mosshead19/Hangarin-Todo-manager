@@ -35,7 +35,7 @@
       <!-- Sidebar scroll-->
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-          <a href="{% url 'index' %}" class="text-nowrap logo-img">
+          <a href="{% url 'dashboard' %}" class="text-nowrap logo-img">
             <img src="{% static 'images/logos/logo.svg' %}" alt="" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
@@ -50,7 +50,7 @@
               <span class="hide-menu">Home</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="{% url 'index' %}" aria-expanded="false">
+              <a class="sidebar-link" href="{% url 'dashboard' %}" aria-expanded="false">
                 <i class="ti ti-atom"></i>
                 <span class="hide-menu">Dashboard</span>
               </a>
@@ -94,14 +94,20 @@
               </a>
              <ul aria-expanded="false" class="collapse first-level">
   {% for category in categories %}
+  
     <li class="sidebar-item">
       <a class="sidebar-link justify-content-between" href="{% url 'category_tasks' category.id %}">
         <div class="d-flex align-items-center gap-3">
           <div class="round-16 d-flex align-items-center justify-content-center">
             
           </div>
-          <span class="hide-menu">{{ category.name }}</span>
+          <span class="hide-menu">{{ category.name }}
+           
+          </span>
+          
+          
         </div>
+         
       </a>
     </li>
   {% empty %}

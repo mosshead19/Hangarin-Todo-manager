@@ -17,17 +17,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from hangarinorg.views import TaskListView
+from hangarinorg.views import (TaskListView,SubtaskCreateView)
 from hangarinorg import views
 
 
 from django.contrib import admin
 from django.urls import path
-from hangarinorg import views  # or wherever your views are
+from hangarinorg import views 
+ # or wherever your views are
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.TaskListView.as_view(), name='index'),  # Your existing home
+    path('', views.TaskListView.as_view(), name='dashboard'),  # Your existing home
     path('category/<int:category_id>/tasks/', views.CategoryTaskListView.as_view(), name='category_tasks'),
     path('category/create/', views.CategoryCreateView.as_view(), name='category_create'),
+
+    #create subtask view for dropdown for categories
+    path('subtask/create/', views.SubtaskCreateView.as_view(), name='subtask_create'),
+   
 ]
