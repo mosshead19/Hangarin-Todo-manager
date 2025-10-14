@@ -13,9 +13,14 @@
                     </p>
                 </div>
                 <div class="ms-auto">
+                     <a href="{% url 'note-create' %}" class="btn btn-primary">
+            <i class="ti ti-plus me-2"></i>Add Note
+        </a>
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
                 </div>
             </div>
+            <!-- In note_list.html, add this below the title -->
+
 
             <div class="row">
                 {% for note in notes %}

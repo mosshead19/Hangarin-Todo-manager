@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h4 class="text-danger mb-4">Delete Subtask</h4>
+            
+            <p class="mb-4">Are you sure you want to delete "{{ object.title }}"?</p>
+            
+            <div class="alert alert-light mb-4">
+                <strong>Parent Task:</strong> {{ object.parent_task.title }}
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="d-flex gap-2 justify-content-center">
+                    <a href="{% url 'subtask-list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

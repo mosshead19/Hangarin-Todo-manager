@@ -13,6 +13,10 @@
                     </p>
                 </div>
                 <div class="ms-auto">
+                    <!-- ADD SUBTASK BUTTON -->
+                    <a href="{% url 'subtask-create' %}" class="btn btn-primary me-2">
+                        <i class="ti ti-plus me-1"></i>Add Subtask
+                    </a>
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
                 </div>
             </div>
@@ -50,7 +54,11 @@
                 <div class="col-12">
                     <div class="text-center py-5">
                         <p class="text-muted">No subtasks found.</p>
-                        <a href="{% url 'dashboard' %}" class="btn btn-primary">View Tasks</a>
+                        <!-- ADD SUBTASK BUTTON IN EMPTY STATE -->
+                        <a href="{% url 'subtask-create' %}" class="btn btn-primary me-2">
+                            <i class="ti ti-plus me-1"></i>Add Your First Subtask
+                        </a>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">View Tasks</a>
                     </div>
                 </div>
                 {% endfor %}

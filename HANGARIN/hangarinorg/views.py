@@ -231,24 +231,58 @@ class NoteListView(ListView):
     
 class NoteCreateView(CreateView):
     model = Note
-    fields = ['content']
     template_name = 'note_form.html'
-    success_url = reverse_lazy('task-update')     
+    fields = []  # No fields, we'll handle everything manually
+    success_url = reverse_lazy('note-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['tasks'] = Task.objects.all().order_by('-created_at')
         return context
+    
+    def post(self, request, *args, **kwargs):
+        task_id = request.POST.get('task')
+        content = request.POST.get('content')
+        
+        print(f"DEBUG: task_id={task_id}, content={content}")
+        
+        if not task_id:
+            # Return form with error
+            return self.render_to_response(self.get_context_data(
+                error='Please select a task'
+            ))
+        
+        if not content:
+            # Return form with error
+            return self.render_to_response(self.get_context_data(
+                error='Please enter note content'
+            ))
+        
+        try:
+            task = Task.objects.get(id=task_id)
+            Note.objects.create(
+                task=task,
+                content=content
+            )
+            return redirect('note-list')
+        except Task.DoesNotExist:
+            return self.render_to_response(self.get_context_data(
+                error='Selected task does not exist'
+            ))
 
 class NoteUpdateView(UpdateView):
     model = Note
     fields = ['content']
     template_name = 'note_form.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('note-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+      
+        if not self.object:
+            context['tasks'] = Task.objects.all()
         return context
 
 class NoteDeleteView(DeleteView):
@@ -275,30 +309,32 @@ class SubtaskListView(ListView):
 
 class SubtaskCreateView(CreateView):
     model = Subtask
-    fields = ['title', 'status']
+    fields = ['title', 'status', 'parent_task']
     template_name = 'subtask_form.html'
-    success_url = reverse_lazy('dashboard')  
+    success_url = reverse_lazy('subtask-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['tasks'] = Task.objects.all().order_by('-created_at')
         return context
 
 class SubtaskUpdateView(UpdateView):
     model = Subtask
     fields = ['title', 'status']
     template_name = 'subtask_form.html'
-    success_url = reverse_lazy('dashboard')  
+    success_url = reverse_lazy('subtask-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['tasks'] = Task.objects.all().order_by('-created_at')
         return context
 
 class SubtaskDeleteView(DeleteView):
     model = Subtask
     template_name = 'subtask_confirm_delete.html'
-    success_url = reverse_lazy('dashboard')  
+    success_url = reverse_lazy('subtask-list')  
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
