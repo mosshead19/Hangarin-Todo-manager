@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from hangarinorg.views import (  TaskListView, TaskCreateView, TaskUpdateView, TaskDeleteView,
-    CategoryCreateView, CategoryUpdateView, CategoryDeleteView, CategoryListView,
+    CategoryTaskListView, CategoryUpdateView, CategoryDeleteView, CategoryListView,
     PriorityCreateView, PriorityUpdateView, PriorityDeleteView,PriorityListView,
     SubtaskCreateView, SubtaskUpdateView, SubtaskDeleteView, SubtaskListView,
     NoteCreateView, NoteUpdateView, NoteDeleteView,NoteListView )

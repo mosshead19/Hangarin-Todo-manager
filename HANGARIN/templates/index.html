@@ -2,16 +2,39 @@
 {% load static %}
 
 {% block content %}
+
 <div class="container mt-5 pt-4">
 <div class="card">
   <div class="card-body">
+    <!-- Search Form -->
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2">
+            <div class="flex-grow-1">
+                <input type="text" 
+                       name="q" 
+                       class="form-control" 
+                       placeholder="Search tasks..." 
+                       value="{{ request.GET.q|default:'' }}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="ti ti-search me-1"></i>Search
+            </button>
+            {% if request.GET.q %}
+            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
     <div class="d-md-flex align-items-center mb-4">
+      
       <div>
         <h4 class="card-title">TASKS</h4>
         <p class="card-subtitle">
           {{ tasks.count }} task(s) found
         </p>
       </div>
+      
       <div class="ms-auto mt-3 mt-md-0">
         <select class="form-select theme-select border-0" aria-label="Default select example">
           <option value="1">March 2025</option>

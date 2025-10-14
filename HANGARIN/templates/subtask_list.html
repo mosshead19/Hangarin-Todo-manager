@@ -5,6 +5,26 @@
 <div class="container mt-5 pt-4">
     <div class="card">
         <div class="card-body">
+            <!-- Search Form -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <form method="get" action="{% url 'subtask-list' %}" class="d-flex gap-2">
+                        <div class="flex-grow-1">
+                            <input type="text" 
+                                   name="q" 
+                                   class="form-control" 
+                                   placeholder="Search subtasks by title or parent task..." 
+                                   value="{{ request.GET.q }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-search me-1"></i>Search
+                        </button>
+                        {% if request.GET.q %}
+                        <a href="{% url 'subtask-list' %}" class="btn btn-outline-secondary">Clear</a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
             <div class="d-md-flex align-items-center mb-4">
                 <div>
                     <h4 class="card-title">Subtasks</h4>

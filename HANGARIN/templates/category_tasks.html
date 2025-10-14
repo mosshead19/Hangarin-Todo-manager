@@ -5,6 +5,28 @@
 <div class="container mt-5 pt-4">
 <div class="card">
     <div class="card-body">
+        <!-- Search Form -->
+<div class="card bg-light mb-4">
+    <div class="card-body">
+       <form method="get" action="{% url 'category_tasks' current_category.id %}" class="d-flex gap-2">
+            <div class="flex-grow-1">
+                <input type="text" 
+                       name="q" 
+                       class="form-control" 
+                       placeholder="Search tasks in {{ current_category.name }}..." 
+                       value="{{ request.GET.q }}">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="ti ti-search me-1"></i>Search
+            </button>
+            {% if request.GET.q %}
+            <a href="{% url 'category_tasks' current_category.id %}" class="btn btn-outline-secondary">Clear</a>
+
+            {% endif %}
+        </form>
+    </div>
+</div>
+        
         <div class="d-md-flex align-items-center">
             <div>
                 <h4 class="card-title">Tasks in "{{ current_category.name }}"</h4>

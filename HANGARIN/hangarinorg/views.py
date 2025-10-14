@@ -41,11 +41,25 @@ class TaskUpdateView(UpdateView):
         # Otherwise, handle the normal task update
         return super().post(request, *args, **kwargs)
 
+from django.db.models import Q
+
 class TaskListView(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__name__icontains=query) |
+                Q(priority__name__icontains=query)
+            )
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,17 +128,29 @@ class TaskDeleteView(DeleteView):
 
 class CategoryTaskListView(ListView):
     model = Task
-    template_name = 'category_tasks.html'  # Simple path
+    template_name = 'category_tasks.html'
     context_object_name = 'tasks'
 
     def get_queryset(self):
-        return Task.objects.filter(category_id=self.kwargs['category_id'])
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+        category_id = self.kwargs['category_id']
+
+        # Filter by category first
+        qs = qs.filter(category_id=category_id)
+
+        if query:
+            qs = qs.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(priority__name__icontains=query)
+            )
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['current_category'] = Category.objects.get(id=self.kwargs['category_id'])
-        context['priorities'] = Priority.objects.all()
         return context
     
 # Category CRUD VIEWS
@@ -223,6 +249,17 @@ class NoteListView(ListView):
     template_name = 'note_list.html'
     context_object_name = 'notes'
     ordering = ['-created_at']  # Show newest first
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(content__icontains=query) |
+                Q(task__title__icontains=query)
+            )
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -301,6 +338,17 @@ class SubtaskListView(ListView):
     model = Subtask
     template_name = 'subtask_list.html'
     context_object_name = 'subtasks'
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(
+                Q(title__icontains=query) |
+                Q(parent_task__title__icontains=query)
+            )
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
