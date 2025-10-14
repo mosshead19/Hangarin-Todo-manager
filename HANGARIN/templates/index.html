@@ -5,11 +5,11 @@
 <div class="container mt-5 pt-4">
 <div class="card">
   <div class="card-body">
-    <div class="d-md-flex align-items-center">
+    <div class="d-md-flex align-items-center mb-4">
       <div>
         <h4 class="card-title">TASKS</h4>
         <p class="card-subtitle">
-          Ample Admin Vs Pixel Admin
+          {{ tasks.count }} task(s) found
         </p>
       </div>
       <div class="ms-auto mt-3 mt-md-0">
@@ -18,6 +18,90 @@
           <option value="2">March 2025</option>
           <option value="3">March 2025</option>
         </select>
+      </div>
+    </div>
+
+    <!-- Quick Add Task Form -->
+    <div class="card bg-light mb-4">
+      <div class="card-body">
+        <form method="post" action="{% url 'task-create' %}">
+          {% csrf_token %}
+          
+          <!-- Main Input Row -->
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col">
+              <input type="text" class="form-control form-control-lg" id="id_title" name="title" placeholder="Add a new task..." required autofocus>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Add Task
+              </button>
+            </div>
+          </div>
+
+          <!-- Advanced Options Toggle -->
+          <div class="mb-2">
+            <a class="text-muted text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
+              <i class="bi bi-chevron-down me-1"></i>
+              <small>Advanced options</small>
+            </a>
+          </div>
+
+          <!-- Collapsible Advanced Options -->
+          <div class="collapse" id="advancedOptions">
+            <div class="row g-3 pt-2 border-top">
+              <div class="col-md-3">
+                <label for="id_category" class="form-label small text-muted">Category</label>
+                <select class="form-select" id="id_category" name="category">
+                  <option value="">None</option>
+                  {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_priority" class="form-label small text-muted">Priority</label>
+                <select class="form-select" id="id_priority" name="priority">
+                  <option value="">None</option>
+                  {% for priority in priorities %}
+                  <option value="{{ priority.id }}">{{ priority.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_status" class="form-label small text-muted">Status</label>
+                <select class="form-select" id="id_status" name="status">
+                  <option value="Pending" selected>Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_deadline" class="form-label small text-muted">Due Date</label>
+                <input type="date" class="form-control" id="id_deadline" name="deadline">
+              </div>
+              
+              <div class="col-12">
+                <label for="id_description" class="form-label small text-muted">Description</label>
+                <textarea class="form-control" id="id_description" name="description" rows="2" placeholder="Add details about this task..."></textarea>
+              </div>
+              <!-- REMOVED the notes field from task creation - Notes are added separately in task edit -->
+            </div>
+          </div>
+        </form>
+        
+        {% if form.errors %}
+        <div class="alert alert-danger mt-3 mb-0">
+          {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+              <div><strong>{{ field }}:</strong> {{ error }}</div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+        {% endif %}
       </div>
     </div>
 
@@ -30,34 +114,81 @@
             <th scope="col" class="px-0 text-muted">Priority</th>
             <th scope="col" class="px-0 text-muted text-end">Category</th>
             <th scope="col" class="px-0 text-muted text-end">Due</th>
+            <th scope="col" class="px-0 text-muted text-end">Actions</th>
           </tr>
         </thead>
         <tbody>
           {% for task in tasks %}
           <tr>
-            <td class="px-0">{{ task.title }}</td>
-            <td class="px-0">{{ task.status }}</td>
             <td class="px-0">
-              <span class="badge bg-info">{{ task.priority }}</span>
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <h6 class="mb-0">{{ task.title }}</h6>
+                  {% if task.description %}
+                  <small class="text-muted">{{ task.description|truncatewords:10 }}</small>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+            <td class="px-0">
+              <span class="badge bg-{% if task.status == 'Completed' %}success{% elif task.status == 'In Progress' %}warning{% else %}secondary{% endif %}">
+                {{ task.status }}
+              </span>
+            </td>
+            <td class="px-0">
+              {% if task.priority %}
+              <span class="badge bg-info">{{ task.priority.name }}</span>
+              {% else %}
+              <span class="text-muted">None</span>
+              {% endif %}
             </td>
             <td class="px-0 text-dark fw-medium text-end">
-              {{ task.category }}
+              {% if task.category %}
+              <span class="badge bg-light text-dark">{{ task.category.name }}</span>
+              {% else %}
+              <span class="text-muted">Uncategorized</span>
+              {% endif %}
             </td>
             <td class="px-0 text-dark fw-medium text-end">
-              {{ task.deadline }}
+              {% if task.deadline %}
+              {{ task.deadline|date:"M d, Y" }}
+              {% else %}
+              <span class="text-muted">No deadline</span>
+              {% endif %}
+            </td>
+            <td class="px-0 text-end">
+              <div class="btn-group">
+                <a href="{% url 'task-update' task.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <a href="{% url 'task-delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+              </div>
             </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="5" class="text-center text-muted">
-              No tasks available.
+            <td colspan="6" class="text-center py-4">
+              <p class="text-muted">No tasks found. Use the form above to create your first task!</p>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
-    </div> <!-- END table-responsive -->
-  </div> <!-- END card-body -->
-</div> <!-- END card -->
+    </div>
+  </div>
 </div>
+</div>
+
+<style>
+  .collapse {
+    transition: height 0.35s ease;
+  }
+  
+  a[aria-expanded="true"] .bi-chevron-down {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
+  
+  a[aria-expanded="false"] .bi-chevron-down {
+    transition: transform 0.3s ease;
+  }
+</style>
 {% endblock %}

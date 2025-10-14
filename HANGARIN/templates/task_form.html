@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="d-md-flex align-items-center mb-4">
+                <div>
+                    <h4 class="card-title">
+                        {% if object %}Edit Task{% else %}Create New Task{% endif %}
+                    </h4>
+                    <p class="card-subtitle">
+                        {% if object %}Update your task details{% else %}Add a new task to your list{% endif %}
+                    </p>
+                </div>
+                <div class="ms-auto">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
+                </div>
+            </div>
+
+            <!-- MAIN TASK FORM -->
+            <form method="post" id="taskForm">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <!-- Task Title -->
+                    <div class="col-12 mb-3">
+                        <label for="id_title" class="form-label">Task Title *</label>
+                        <input type="text" 
+                               name="title" 
+                               id="id_title" 
+                               class="form-control form-control-lg" 
+                               value="{{ form.title.value|default:'' }}"
+                               placeholder="What needs to be done?"
+                               required
+                               autofocus>
+                        {% if form.title.errors %}
+                        <div class="text-danger small mt-1">
+                            {{ form.title.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12 mb-3">
+                        <label for="id_description" class="form-label">Description</label>
+                        <textarea name="description" 
+                                  id="id_description" 
+                                  class="form-control" 
+                                  rows="3"
+                                  placeholder="Add more details about this task...">{{ form.description.value|default:'' }}</textarea>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="id_category" class="form-label">Category</label>
+                        <select name="category" id="id_category" class="form-select">
+                            <option value="">No Category</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" 
+                                    {% if form.category.value|stringformat:"s" == category.id|stringformat:"s" %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="id_priority" class="form-label">Priority</label>
+                        <select name="priority" id="id_priority" class="form-select">
+                            <option value="">No Priority</option>
+                            {% for priority in priorities %}
+                            <option value="{{ priority.id }}" 
+                                    {% if form.priority.value|stringformat:"s" == priority.id|stringformat:"s" %}selected{% endif %}>
+                                {{ priority.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="id_status" class="form-label">Status</label>
+                        <select name="status" id="id_status" class="form-select">
+                            <option value="Pending" {% if form.status.value == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if form.status.value == "In Progress" %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if form.status.value == "Completed" %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="id_deadline" class="form-label">Due Date</label>
+                        <input type="datetime-local" 
+                               name="deadline" 
+                               id="id_deadline" 
+                               class="form-control"
+                               value="{{ form.deadline.value|date:'Y-m-d\TH:i'|default:'' }}">
+                    </div>
+                </div>
+
+                <!-- Task Form Actions -->
+                <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" name="update_task" class="btn btn-primary">
+                        {% if object %}Update Task{% else %}Create Task{% endif %}
+                    </button>
+                </div>
+            </form>
+
+            <!-- ADD NOTES SECTION - Only show when editing existing task -->
+            {% if object %}
+            <div class="mt-4 pt-3 border-top">
+                <h5>Notes</h5>
+                
+                <!-- Add New Note Form - SEPARATE FORM -->
+                <div class="mb-4">
+                    <form method="post" action="{% url 'task-update' object.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="task" value="{{ object.id }}">
+                        <div class="d-flex gap-2">
+                            <input type="text" 
+                                   name="note_content" 
+                                   class="form-control" 
+                                   placeholder="Add a note about this task..."
+                                   required>
+                            <button type="submit" name="add_note" class="btn btn-primary">Add Note</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Notes List -->
+                <div class="notes-list">
+                    {% for note in notes %}
+                    <div class="card mb-2">
+                        <div class="card-body py-2">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <p class="mb-1">{{ note.content }}</p>
+                                    <small class="text-muted">{{ note.created_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                                <div class="ms-3">
+                                    <a href="{% url 'note-update' note.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                    <a href="{% url 'note-delete' note.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted text-center">No notes yet. Add your first note above!</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            <!-- END NOTES SECTION -->
+        </div>
+    </div>
+</div>
+{% endblock %}

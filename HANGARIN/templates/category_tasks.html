@@ -11,9 +11,93 @@
                 <p class="card-subtitle">{{ tasks.count }} task(s) found</p>
             </div>
             <div class="ms-auto">
+                
                 <a href="{% url 'dashboard' %}" class="btn btn-outline-primary">View All Tasks</a>
             </div>
         </div>
+        <!-- Quick Add Task Form -->
+    <div class="card bg-light mb-4">
+      <div class="card-body">
+        <form method="post" action="{% url 'task-create' %}">
+          {% csrf_token %}
+          
+          <!-- Main Input Row -->
+          <div class="row g-2 align-items-center mb-3">
+            <div class="col">
+              <input type="text" class="form-control form-control-lg" id="id_title" name="title" placeholder="Add a new task..." required autofocus>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Add Task
+              </button>
+            </div>
+          </div>
+
+          <!-- Advanced Options Toggle -->
+          <div class="mb-2">
+            <a class="text-muted text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
+              <i class="bi bi-chevron-down me-1"></i>
+              <small>Advanced options</small>
+            </a>
+          </div>
+
+          <!-- Collapsible Advanced Options -->
+          <div class="collapse" id="advancedOptions">
+            <div class="row g-3 pt-2 border-top">
+              <div class="col-md-3">
+                <label for="id_category" class="form-label small text-muted">Category</label>
+                <select class="form-select" id="id_category" name="category">
+                  <option value="">None</option>
+                  {% for category in categories %}
+                  <option value="{{ category.id }}">{{ category.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_priority" class="form-label small text-muted">Priority</label>
+                <select class="form-select" id="id_priority" name="priority">
+                  <option value="">None</option>
+                  {% for priority in priorities %}
+                  <option value="{{ priority.id }}">{{ priority.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_status" class="form-label small text-muted">Status</label>
+                <select class="form-select" id="id_status" name="status">
+                  <option value="Pending" selected>Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+              
+              <div class="col-md-3">
+                <label for="id_deadline" class="form-label small text-muted">Due Date</label>
+                <input type="date" class="form-control" id="id_deadline" name="deadline">
+              </div>
+              
+              <div class="col-12">
+                <label for="id_description" class="form-label small text-muted">Description</label>
+                <textarea class="form-control" id="id_description" name="description" rows="2" placeholder="Add details about this task..."></textarea>
+              </div>
+              <!-- REMOVED the notes field from task creation - Notes are added separately in task edit -->
+            </div>
+          </div>
+        </form>
+        
+        {% if form.errors %}
+        <div class="alert alert-danger mt-3 mb-0">
+          {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+              <div><strong>{{ field }}:</strong> {{ error }}</div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
         
         <div class="table-responsive mt-4">
             <table class="table mb-0 text-nowrap varient-table align-middle fs-3">
@@ -23,29 +107,67 @@
                         <th scope="col" class="px-0 text-muted">Status</th>
                         <th scope="col" class="px-0 text-muted">Priority</th>
                         <th scope="col" class="px-0 text-muted text-end">Due</th>
+                        <th scope="col" class="px-0 text-muted text-end">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for task in tasks %}
                     <tr>
-                     <td class="px-0">{{ task.title }}</td>
-                        <td class="px-0">{{ task.status }}</td>
                         <td class="px-0">
-                            <span class="badge bg-info">{{ task.priority }}</span>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <h6 class="mb-0">{{ task.title }}</h6>
+                                    {% if task.description %}
+                                    <small class="text-muted">{{ task.description|truncatewords:10 }}</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-0">
+                            <span class="badge bg-{% if task.status == 'Completed' %}success{% elif task.status == 'In Progress' %}warning{% else %}secondary{% endif %}">
+                                {{ task.status }}
+                            </span>
+                        </td>
+                        <td class="px-0">
+                            {% if task.priority %}
+                            <span class="badge bg-info">{{ task.priority.name }}</span>
+                            {% else %}
+                            <span class="text-muted">None</span>
+                            {% endif %}
                         </td>
                         <td class="px-0 text-dark fw-medium text-end">
-                            {{ task.deadline }}
+                            {% if task.deadline %}
+                            {{ task.deadline|date:"M d, Y" }}
+                            {% else %}
+                            <span class="text-muted">No deadline</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-0 text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'task-update' task.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a href="{% url 'task-delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4">
+                        <td colspan="5" class="text-center py-4">
                             <p class="text-muted">No tasks found in this category.</p>
+                            <a href="{% url 'task-create' %}" class="btn btn-primary">Create Your First Task</a>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+
+        <!-- Category Management Section -->
+        <div class="mt-4 pt-3 border-top">
+            <h5>Category Management</h5>
+            <div class="btn-group">
+                <a href="{% url 'category-update' current_category.id %}" class="btn btn-warning">Edit This Category</a>
+                <a href="{% url 'category-delete' current_category.id %}" class="btn btn-danger">Delete This Category</a>
+            </div>
         </div>
     </div>
 </div>

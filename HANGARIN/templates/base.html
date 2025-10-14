@@ -60,24 +60,24 @@
             <!-- ---------------------------------- -->
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"  
-                href="#" aria-expanded="false">
+                href="{% url 'note-list' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <i class="ti ti-aperture"></i>
                   </span>
-                  <span class="hide-menu">Analytical</span>
+                  <span class="hide-menu">Notes</span>
                 </div>
                 
               </a>
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"  
-                href="#" aria-expanded="false">
+                href="{% url 'subtask-list' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <i class="ti ti-shopping-cart"></i>
                   </span>
-                  <span class="hide-menu">Tasks</span>
+                  <span class="hide-menu">Subtasks</span>
                 </div>
                 
               </a>
@@ -320,7 +320,7 @@
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between"  
-                href="#" aria-expanded="false">
+                 href="{% url 'note-list' %}" aria-expanded="false">
                 <div class="d-flex align-items-center gap-3">
                   <span class="d-flex">
                     <i class="ti ti-notes"></i>
@@ -1804,22 +1804,20 @@
           </div>
         </nav>
       </header>
-      <!--  Header End -->
-     <main class="container-fluid" style="padding-top: 80px;">
+       <!--  Header End -->
+      <main class="container-fluid" style="padding-top: 80px;">
         {% block content %}
         <!-- Child templates will insert content here -->
         {% endblock %}
       </main>
 
-            
-          <div class="py-6 px-6 text-center">
-            <p class="mb-0 fs-4">Design and Developed by <a href="#"
-                class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a> Distributed by <a href="https://themewagon.com" target="_blank" >ThemeWagon</a></p>
-          </div>
-        </div>
+      <div class="py-6 px-6 text-center">
+        <p class="mb-0 fs-4">Design and Developed by <a href="#"
+            class="pe-1 text-primary text-decoration-underline">Wrappixel.com</a> Distributed by <a href="https://themewagon.com" target="_blank">ThemeWagon</a></p>
       </div>
     </div>
   </div>
+
   <script src="{% static 'libs/jquery/dist/jquery.min.js' %}"></script>
   <script src="{% static 'libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'js/sidebarmenu.js' %}"></script>
@@ -1830,5 +1828,4 @@
   <!-- solar icons -->
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 </body>
-
 </html>
