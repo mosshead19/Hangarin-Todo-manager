@@ -64,3 +64,8 @@ class Subtask(BaseModel):
     
     
 
+Subtask
+Note
+Task
+Category
+Priority
