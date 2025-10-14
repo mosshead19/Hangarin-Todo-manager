@@ -6,26 +6,56 @@
 <div class="container mt-5 pt-4">
 <div class="card">
   <div class="card-body">
-    <!-- Search Form -->
+    <!-- Search and Sort Form -->
 <div class="card bg-light mb-4">
     <div class="card-body">
-        <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2">
+        <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2 align-items-end">
+            <!-- Search Input -->
             <div class="flex-grow-1">
+                <label class="form-label small text-muted">Search Tasks</label>
                 <input type="text" 
                        name="q" 
                        class="form-control" 
-                       placeholder="Search tasks..." 
-                       value="{{ request.GET.q|default:'' }}">
+                       placeholder="Search by title, description, category, or priority..." 
+                       value="{{ request.GET.q }}">
             </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="ti ti-search me-1"></i>Search
-            </button>
-            {% if request.GET.q %}
-            <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Clear</a>
+            
+            <!-- Sort Dropdown -->
+            <div>
+                <label class="form-label small text-muted">Sort By</label>
+                <select name="ordering" class="form-select" onchange="this.form.submit()">
+                    <option value="-created_at" {% if current_ordering == '-created_at' %}selected{% endif %}>Newest First</option>
+                    <option value="created_at" {% if current_ordering == 'created_at' %}selected{% endif %}>Oldest First</option>
+                    <option value="title" {% if current_ordering == 'title' %}selected{% endif %}>Title A-Z</option>
+                    <option value="-title" {% if current_ordering == '-title' %}selected{% endif %}>Title Z-A</option>
+                    <option value="status" {% if current_ordering == 'status' %}selected{% endif %}>Status</option>
+                    <option value="-status" {% if current_ordering == '-status' %}selected{% endif %}>Status (Reverse)</option>
+                    <option value="priority__name" {% if current_ordering == 'priority__name' %}selected{% endif %}>Priority A-Z</option>
+                    <option value="-priority__name" {% if current_ordering == '-priority__name' %}selected{% endif %}>Priority Z-A</option>
+                    <option value="category__name" {% if current_ordering == 'category__name' %}selected{% endif %}>Category A-Z</option>
+                    <option value="-category__name" {% if current_ordering == '-category__name' %}selected{% endif %}>Category Z-A</option>
+                    <option value="deadline" {% if current_ordering == 'deadline' %}selected{% endif %}>Due Date (Soonest)</option>
+                    <option value="-deadline" {% if current_ordering == '-deadline' %}selected{% endif %}>Due Date (Latest)</option>
+                </select>
+            </div>
+            
+            <!-- Search Button -->
+            <div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="ti ti-search me-1"></i>Search
+                </button>
+            </div>
+            
+            <!-- Clear Button -->
+            {% if request.GET.q or request.GET.ordering != '-created_at' %}
+            <div>
+                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Clear All</a>
+            </div>
             {% endif %}
         </form>
     </div>
 </div>
+
     <div class="d-md-flex align-items-center mb-4">
       
       <div>

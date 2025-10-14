@@ -47,6 +47,21 @@ class TaskListView(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
+    paginate_by = 10
+
+    def get_ordering(self):
+        allowed = [
+            "created_at", "-created_at",
+            "title", "-title", 
+            "status", "-status",
+            "priority__name", "-priority__name",
+            "category__name", "-category__name",
+            "deadline", "-deadline"
+        ]
+        sort_by = self.request.GET.get("ordering")
+        if sort_by in allowed:
+            return sort_by
+        return "-created_at"  # Default ordering
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -65,6 +80,7 @@ class TaskListView(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['priorities'] = Priority.objects.all()
+        context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
         return context
     
   #TASK CRUD VIEWS  
@@ -130,6 +146,20 @@ class CategoryTaskListView(ListView):
     model = Task
     template_name = 'category_tasks.html'
     context_object_name = 'tasks'
+    paginate_by = 10
+
+    def get_ordering(self):
+        allowed = [
+            "created_at", "-created_at",
+            "title", "-title", 
+            "status", "-status",
+            "priority__name", "-priority__name",
+            "deadline", "-deadline"
+        ]
+        sort_by = self.request.GET.get("ordering")
+        if sort_by in allowed:
+            return sort_by
+        return "-created_at"  # Default ordering
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -151,6 +181,7 @@ class CategoryTaskListView(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['current_category'] = Category.objects.get(id=self.kwargs['category_id'])
+        context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
         return context
     
 # Category CRUD VIEWS
@@ -248,7 +279,18 @@ class NoteListView(ListView):
     model = Note
     template_name = 'note_list.html'
     context_object_name = 'notes'
-    ordering = ['-created_at']  # Show newest first
+    paginate_by = 10
+
+    def get_ordering(self):
+        allowed = [
+            "created_at", "-created_at",
+            "content", "-content",
+            "task__title", "-task__title"
+        ]
+        sort_by = self.request.GET.get("ordering")
+        if sort_by in allowed:
+            return sort_by
+        return "-created_at"  # Default ordering
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -263,7 +305,8 @@ class NoteListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()  # For your sidebar
+        context['categories'] = Category.objects.all()
+        context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
         return context
     
 class NoteCreateView(CreateView):
@@ -338,6 +381,19 @@ class SubtaskListView(ListView):
     model = Subtask
     template_name = 'subtask_list.html'
     context_object_name = 'subtasks'
+    paginate_by = 10
+
+    def get_ordering(self):
+        allowed = [
+            "created_at", "-created_at",
+            "title", "-title", 
+            "status", "-status",
+            "parent_task__title", "-parent_task__title"
+        ]
+        sort_by = self.request.GET.get("ordering")
+        if sort_by in allowed:
+            return sort_by
+        return "-created_at"  # Default ordering
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -353,6 +409,7 @@ class SubtaskListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
         return context
 
 class SubtaskCreateView(CreateView):
