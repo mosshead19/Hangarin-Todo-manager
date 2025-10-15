@@ -6,6 +6,52 @@
 <div class="container mt-5 pt-4">
 <div class="card">
   <div class="card-body">
+        <!-- Quick Stats Section - Gradient Backgrounds -->
+    <div class="row g-3 mb-4">
+        <!-- Total Tasks -->
+        <div class="col-md-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-center p-4">
+                    <i class="ti ti-checklist display-5 mb-3 text-white"></i>
+                    <h2 class="mb-1 text-white">{{ all_tasks_count }}</h2>
+                    <small class="text-white opacity-75">Total Tasks</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pending Tasks -->
+        <div class="col-md-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="card-body text-center p-4">
+                    <i class="ti ti-clock display-5 mb-3 text-white"></i>
+                    <h2 class="mb-1 text-white">{{ pending_count }}</h2>
+                    <small class="text-white opacity-75">Pending</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- In Progress -->
+        <div class="col-md-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <div class="card-body text-center p-4">
+                    <i class="ti ti-refresh display-5 mb-3 text-white"></i>
+                    <h2 class="mb-1 text-white">{{ in_progress_count }}</h2>
+                    <small class="text-white opacity-75">In Progress</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Completed -->
+        <div class="col-md-3">
+            <div class="card text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <div class="card-body text-center p-4">
+                    <i class="ti ti-circle-check display-5 mb-3 text-white"></i>
+                    <h2 class="mb-1 text-white">{{ completed_count }}</h2>
+                    <small class="text-white opacity-75">Completed</small>
+                </div>
+            </div>
+        </div>
+    </div>
    <!-- Search and Sort Form -->
 <div class="card bg-light mb-4">
     <div class="card-body">
@@ -46,13 +92,7 @@
         </p>
       </div>
       
-      <div class="ms-auto mt-3 mt-md-0">
-        <select class="form-select theme-select border-0" aria-label="Default select example">
-          <option value="1">March 2025</option>
-          <option value="2">March 2025</option>
-          <option value="3">March 2025</option>
-        </select>
-      </div>
+     
     </div>
 
     <!-- Quick Add Task Form -->
@@ -73,13 +113,13 @@
             </div>
           </div>
 
-          <!-- Advanced Options Toggle -->
-          <div class="mb-2">
-            <a class="text-muted text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
-              <i class="bi bi-chevron-down me-1"></i>
-              <small>Advanced options</small>
-            </a>
-          </div>
+       <!-- Advanced Options Toggle -->
+<div class="mb-2">
+    <a class="text-primary text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
+        <i class="bi bi-chevron-down me-1"></i>
+        <small class="fw-medium">Advanced options</small>
+    </a>
+</div>
 
           <!-- Collapsible Advanced Options -->
           <div class="collapse" id="advancedOptions">

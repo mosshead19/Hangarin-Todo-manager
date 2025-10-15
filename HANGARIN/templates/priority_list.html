@@ -5,35 +5,7 @@
 <div class="container mt-5 pt-4">
     <div class="card">
         <div class="card-body">
-             <!-- Quick Stats -->
-            {% if priorities %}
-            <div class="row mt-4 pt-3 border-top">
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-primary">{{ priorities.count }}</h3>
-                            <p class="text-muted mb-0">Total Priorities</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">{{ total_tasks }}</h3>
-                            <p class="text-muted mb-0">Total Tasks</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">{{ average_tasks_per_priority }}</h3>
-                            <p class="text-muted mb-0">Avg Tasks per Priority</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
+         
             <!-- Search and Sort Form -->
             <div class="card bg-light mb-4">
                 <div class="card-body">
