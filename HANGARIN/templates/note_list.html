@@ -2,156 +2,169 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
+<div class="container mt-3 mt-md-5 pt-4">
     <div class="card">
         <div class="card-body">
-            <!-- Search and Sort Form -->
-<div class="card bg-light mb-4">
-    <div class="card-body">
-        <form method="get" action="{% url 'note-list' %}" class="d-flex gap-2 align-items-end">
-            <!-- Search Input -->
-            <div class="flex-grow-1">
-                <label class="form-label small text-muted">Search Notes</label>
-                <input type="text" 
-                       name="q" 
-                       class="form-control" 
-                       placeholder="Search by note content or task title..." 
-                       value="{{ request.GET.q }}">
+            <!-- Search Form - Mobile Responsive -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <form method="get" action="{% url 'note-list' %}">
+                        <div class="row g-2 align-items-end">
+                            <!-- Search Input -->
+                            <div class="col-12 col-md-8">
+                                <label class="form-label small text-muted">Search Notes</label>
+                                <input type="text" 
+                                       name="q" 
+                                       class="form-control" 
+                                       placeholder="Search by note content or task title..." 
+                                       value="{{ request.GET.q }}">
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="col-12 col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="ti ti-search me-1 d-none d-md-inline"></i>
+                                        <span class="d-md-none">Search</span>
+                                        <span class="d-none d-md-inline">Search</span>
+                                    </button>
+                                    
+                                    {% if request.GET.q or request.GET.ordering != '-created_at' %}
+                                    <a href="{% url 'note-list' %}" class="btn btn-outline-secondary">
+                                        <i class="ti ti-x d-md-none"></i>
+                                        <span class="d-none d-md-inline">Clear All</span>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            
-           
-            
-            <!-- Search Button -->
-            <div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="ti ti-search me-1"></i>Search
-                </button>
-            </div>
-            
-            <!-- Clear Button -->
-            {% if request.GET.q or request.GET.ordering != '-created_at' %}
-            <div>
-                <a href="{% url 'note-list' %}" class="btn btn-outline-secondary">Clear All</a>
-            </div>
-            {% endif %}
-        </form>
-    </div>
-</div>
-            <div class="d-md-flex align-items-center mb-4">
-                <div>
+
+            <!-- Header Section - Mobile Responsive -->
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4">
+                <div class="mb-2 mb-md-0">
                     <h4 class="card-title">Notes</h4>
                     <p class="card-subtitle">
                         {{ notes.count }} note(s) found
                     </p>
                 </div>
-                <div class="ms-auto">
-                     <a href="{% url 'note-create' %}" class="btn btn-primary">
-            <i class="ti ti-plus me-2"></i>Add Note
-        </a>
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
+                <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                    <a href="{% url 'note-create' %}" class="btn btn-primary">
+                        <i class="ti ti-plus me-1"></i>Add Note
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                        Back to Tasks
+                    </a>
                 </div>
             </div>
-            <!-- In note_list.html, add this below the title -->
 
-<!-- Sort Section - Clickable Sort Options -->
-<div class="card bg-light mb-4">
-    <div class="card-body">
-        <!-- Sort Header -->
-        <div class="d-flex justify-content-between align-items-center">
-            <h6 class="card-title mb-0">
-                <i class="ti ti-sort-descending me-2"></i>Sort Notes By
-            </h6>
-            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
-                <i class="ti ti-chevron-up"></i> Hide
-            </button>
-        </div>
+            <!-- Sort Section - Mobile Responsive -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <!-- Sort Header -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">
+                            <i class="ti ti-sort-descending me-2"></i>Sort Notes By
+                        </h6>
+                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                            <i class="ti ti-chevron-up d-none d-md-inline"></i>
+                            <span class="d-md-none">Toggle</span>
+                            <span class="d-none d-md-inline">Hide</span>
+                        </button>
+                    </div>
 
-        <!-- Sort Content - Expanded by Default -->
-        <div class="collapse show" id="sortCollapse">
-            <div class="mt-3 pt-3 border-top">
-                <!-- Date Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-created_at" 
-                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-descending me-1"></i>Newest First
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=created_at" 
-                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-ascending me-1"></i>Oldest First
-                        </a>
+                    <!-- Sort Content - Expanded by Default -->
+                    <div class="collapse show" id="sortCollapse">
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="row g-2">
+                                <!-- Date Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-created_at" 
+                                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-descending me-1 d-none d-sm-inline"></i>Newest
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=created_at" 
+                                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-ascending me-1 d-none d-sm-inline"></i>Oldest
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Content Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Content:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=content" 
+                                           class="btn btn-sm {% if current_ordering == 'content' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-a-z me-1 d-none d-sm-inline"></i>A-Z
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-content" 
+                                           class="btn btn-sm {% if current_ordering == '-content' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-z-a me-1 d-none d-sm-inline"></i>Z-A
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Task Title Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Task:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=task__title" 
+                                           class="btn btn-sm {% if current_ordering == 'task__title' %}btn-success{% else %}btn-outline-success{% endif %} flex-grow-1">
+                                            <i class="ti ti-checklist me-1 d-none d-sm-inline"></i>Task A-Z
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-task__title" 
+                                           class="btn btn-sm {% if current_ordering == '-task__title' %}btn-success{% else %}btn-outline-success{% endif %} flex-grow-1">
+                                            <i class="ti ti-checklist me-1 d-none d-sm-inline"></i>Task Z-A
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Active Sort Display -->
+                            {% if current_ordering and current_ordering != '-created_at' %}
+                            <div class="mt-3 pt-3 border-top">
+                                <small class="text-muted">Current sort:</small>
+                                {% if current_ordering == '-created_at' %}
+                                <span class="badge bg-primary me-1">Newest First</span>
+                                {% elif current_ordering == 'created_at' %}
+                                <span class="badge bg-primary me-1">Oldest First</span>
+                                {% elif current_ordering == 'content' %}
+                                <span class="badge bg-info me-1">Content A-Z</span>
+                                {% elif current_ordering == '-content' %}
+                                <span class="badge bg-info me-1">Content Z-A</span>
+                                {% elif current_ordering == 'task__title' %}
+                                <span class="badge bg-success me-1">Task Title A-Z</span>
+                                {% elif current_ordering == '-task__title' %}
+                                <span class="badge bg-success me-1">Task Title Z-A</span>
+                                {% endif %}
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" 
+                                   class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
+                            </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-
-                <!-- Content Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Content:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=content" 
-                           class="btn btn-sm {% if current_ordering == 'content' %}btn-info{% else %}btn-outline-info{% endif %}">
-                            <i class="ti ti-sort-a-z me-1"></i>Content A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-content" 
-                           class="btn btn-sm {% if current_ordering == '-content' %}btn-info{% else %}btn-outline-info{% endif %}">
-                            <i class="ti ti-sort-z-a me-1"></i>Content Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Task Title Sorting -->
-                <div class="mb-0">
-                    <small class="text-muted fw-bold d-block mb-2">By Task:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=task__title" 
-                           class="btn btn-sm {% if current_ordering == 'task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-checklist me-1"></i>Task Title A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-task__title" 
-                           class="btn btn-sm {% if current_ordering == '-task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-checklist me-1"></i>Task Title Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Active Sort Display -->
-                {% if current_ordering and current_ordering != '-created_at' %}
-                <div class="mt-3 pt-3 border-top">
-                    <small class="text-muted">Current sort:</small>
-                    {% if current_ordering == '-created_at' %}
-                    <span class="badge bg-primary me-1">Newest First</span>
-                    {% elif current_ordering == 'created_at' %}
-                    <span class="badge bg-primary me-1">Oldest First</span>
-                    {% elif current_ordering == 'content' %}
-                    <span class="badge bg-info me-1">Content A-Z</span>
-                    {% elif current_ordering == '-content' %}
-                    <span class="badge bg-info me-1">Content Z-A</span>
-                    {% elif current_ordering == 'task__title' %}
-                    <span class="badge bg-success me-1">Task Title A-Z</span>
-                    {% elif current_ordering == '-task__title' %}
-                    <span class="badge bg-success me-1">Task Title Z-A</span>
-                    {% endif %}
-                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" 
-                       class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
-                </div>
-                {% endif %}
             </div>
-        </div>
-    </div>
-</div>
+
+            <!-- Notes Grid - Mobile Responsive -->
             <div class="row">
                 {% for note in notes %}
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
+                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
                             <!-- Note Content (Top) -->
-                            <p class="card-text mb-3">{{ note.content }}</p>
+                            <p class="card-text mb-3 flex-grow-1">{{ note.content|truncatewords:30 }}</p>
                             
                             <!-- Task Title and Date (Bottom) -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <div class="me-2">
                                     <small class="text-muted d-block">
-                                        <strong>{{ note.task.title }}</strong>
+                                        <strong>{{ note.task.title|truncatewords:3 }}</strong>
                                     </small>
                                     <small class="text-muted">
                                         {{ note.created_at|date:"M d, Y" }}
@@ -168,11 +181,57 @@
                 {% empty %}
                 <div class="col-12">
                     <div class="text-center py-5">
-                        <p class="text-muted">No notes found.</p>
+                        <p class="text-muted">
+                            {% if request.GET.q %}
+                            No notes found matching "{{ request.GET.q }}".
+                            {% else %}
+                            No notes found.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'note-create' %}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>Create Your First Note
+                        </a>
                     </div>
                 </div>
                 {% endfor %}
             </div>
+
+            <!-- Pagination - Mobile Responsive -->
+            {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center flex-wrap">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <i class="ti ti-chevron-left"></i>
+                            <span class="d-none d-sm-inline">Previous</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <span class="d-none d-sm-inline">Next</span>
+                            <i class="ti ti-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>

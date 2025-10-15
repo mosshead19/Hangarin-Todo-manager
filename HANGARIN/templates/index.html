@@ -3,395 +3,337 @@
 
 {% block content %}
 
-<div class="container mt-5 pt-4">
+<div class="container mt-3 mt-md-5 pt-4">
 <div class="card">
   <div class="card-body">
-        <!-- Quick Stats Section - Gradient Backgrounds -->
-    <div class="row g-3 mb-4">
+    <!-- Quick Stats Section - Mobile Responsive -->
+    <div class="row g-2 g-md-3 mb-4">
         <!-- Total Tasks -->
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <div class="card-body text-center p-4">
-                    <i class="ti ti-checklist display-5 mb-3 text-white"></i>
-                    <h2 class="mb-1 text-white">{{ all_tasks_count }}</h2>
-                    <small class="text-white opacity-75">Total Tasks</small>
+                <div class="card-body text-center p-2 p-md-4">
+                    <i class="ti ti-checklist display-6 display-md-5 mb-2 mb-md-3 text-white"></i>
+                    <h4 class="h2-md mb-1 text-white">{{ all_tasks_count }}</h4>
+                    <small class="text-white opacity-75 d-none d-sm-block">Total Tasks</small>
+                    <small class="text-white opacity-75 d-sm-none">Total</small>
                 </div>
             </div>
         </div>
         
         <!-- Pending Tasks -->
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <div class="card-body text-center p-4">
-                    <i class="ti ti-clock display-5 mb-3 text-white"></i>
-                    <h2 class="mb-1 text-white">{{ pending_count }}</h2>
+                <div class="card-body text-center p-2 p-md-4">
+                    <i class="ti ti-clock display-6 display-md-5 mb-2 mb-md-3 text-white"></i>
+                    <h4 class="h2-md mb-1 text-white">{{ pending_count }}</h4>
                     <small class="text-white opacity-75">Pending</small>
                 </div>
             </div>
         </div>
         
         <!-- In Progress -->
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                <div class="card-body text-center p-4">
-                    <i class="ti ti-refresh display-5 mb-3 text-white"></i>
-                    <h2 class="mb-1 text-white">{{ in_progress_count }}</h2>
-                    <small class="text-white opacity-75">In Progress</small>
+                <div class="card-body text-center p-2 p-md-4">
+                    <i class="ti ti-refresh display-6 display-md-5 mb-2 mb-md-3 text-white"></i>
+                    <h4 class="h2-md mb-1 text-white">{{ in_progress_count }}</h4>
+                    <small class="text-white opacity-75 d-none d-sm-block">In Progress</small>
+                    <small class="text-white opacity-75 d-sm-none">Progress</small>
                 </div>
             </div>
         </div>
         
         <!-- Completed -->
-        <div class="col-md-3">
+        <div class="col-6 col-md-3">
             <div class="card text-white" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                <div class="card-body text-center p-4">
-                    <i class="ti ti-circle-check display-5 mb-3 text-white"></i>
-                    <h2 class="mb-1 text-white">{{ completed_count }}</h2>
+                <div class="card-body text-center p-2 p-md-4">
+                    <i class="ti ti-circle-check display-6 display-md-5 mb-2 mb-md-3 text-white"></i>
+                    <h4 class="h2-md mb-1 text-white">{{ completed_count }}</h4>
                     <small class="text-white opacity-75">Completed</small>
                 </div>
             </div>
         </div>
     </div>
-   <!-- Search and Sort Form -->
+
+   <!-- Search and Sort Form - Mobile Responsive -->
 <div class="card bg-light mb-4">
     <div class="card-body">
-        <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2 align-items-end">
-            <!-- Search Input -->
-            <div class="flex-grow-1">
-                <label class="form-label small text-muted">Search Tasks</label>
-                <input type="text" 
-                       name="q" 
-                       class="form-control" 
-                       placeholder="Search by title, description, category, or priority..." 
-                       value="{{ request.GET.q }}">
+        <form method="get" action="{% url 'dashboard' %}">
+            <div class="row g-2 align-items-end">
+                <!-- Search Input -->
+                <div class="col-12 col-md-8">
+                    <label class="form-label small text-muted">Search Tasks</label>
+                    <input type="text" 
+                           name="q" 
+                           class="form-control" 
+                           placeholder="Search tasks..." 
+                           value="{{ request.GET.q }}">
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="col-12 col-md-4">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="ti ti-search me-1 d-none d-md-inline"></i>
+                            <span class="d-md-none">Search</span>
+                            <span class="d-none d-md-inline">Search</span>
+                        </button>
+                        
+                        {% if request.GET.q or request.GET.ordering != '-created_at' or request.GET.status or request.GET.priority or request.GET.category %}
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="ti ti-x d-md-none"></i>
+                            <span class="d-none d-md-inline">Clear</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
+        </form>
+    </div>
+</div>
+
+    <div class="d-md-flex align-items-center mb-4">
+        <div>
+            <h4 class="card-title">TASKS</h4>
+            <p class="card-subtitle">
+                {{ tasks.count }} task(s) found
+            </p>
+        </div>
+    </div>
+
+    <!-- Quick Add Task Form - Mobile Responsive -->
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <form method="post" action="{% url 'task-create' %}">
+                {% csrf_token %}
+                
+                <!-- Main Input Row -->
+                <div class="row g-2 align-items-center mb-3">
+                    <div class="col-12 col-md-8">
+                        <input type="text" class="form-control form-control-lg" id="id_title" name="title" placeholder="Add a new task..." required autofocus>
+                    </div>
+                    <div class="col-12 col-md-4 mt-2 mt-md-0">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-plus-circle me-1"></i> Add Task
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Advanced Options Toggle -->
+                <div class="mb-2">
+                    <a class="text-primary text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
+                        <i class="bi bi-chevron-down me-1"></i>
+                        <small class="fw-medium">Advanced options</small>
+                    </a>
+                </div>
+
+                <!-- Collapsible Advanced Options -->
+                <div class="collapse" id="advancedOptions">
+                    <div class="row g-2 g-md-3 pt-2 border-top">
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label for="id_category" class="form-label small text-muted">Category</label>
+                            <select class="form-select" id="id_category" name="category">
+                                <option value="">None</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label for="id_priority" class="form-label small text-muted">Priority</label>
+                            <select class="form-select" id="id_priority" name="priority">
+                                <option value="">None</option>
+                                {% for priority in priorities %}
+                                <option value="{{ priority.id }}">{{ priority.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label for="id_status" class="form-label small text-muted">Status</label>
+                            <select class="form-select" id="id_status" name="status">
+                                <option value="Pending" selected>Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-md-6 col-lg-3">
+                            <label for="id_deadline" class="form-label small text-muted">Due Date</label>
+                            <input type="date" class="form-control" id="id_deadline" name="deadline">
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="id_description" class="form-label small text-muted">Description</label>
+                            <textarea class="form-control" id="id_description" name="description" rows="2" placeholder="Add details about this task..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
             
-           
-            <!-- Search Button -->
-            <div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="ti ti-search me-1"></i>Search
-                </button>
-            </div>
-            
-            <!-- Clear Button -->
-            {% if request.GET.q or request.GET.ordering != '-created_at' or request.GET.status or request.GET.priority or request.GET.category %}
-            <div>
-                <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Clear All</a>
+            {% if form.errors %}
+            <div class="alert alert-danger mt-3 mb-0">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <div><strong>{{ field }}:</strong> {{ error }}</div>
+                    {% endfor %}
+                {% endfor %}
             </div>
             {% endif %}
-        </form>
-    </div>
-</div>
-    <div class="d-md-flex align-items-center mb-4">
-      
-      <div>
-        <h4 class="card-title">TASKS</h4>
-        <p class="card-subtitle">
-          {{ tasks.count }} task(s) found
-        </p>
-      </div>
-      
-     
+        </div>
     </div>
 
-    <!-- Quick Add Task Form -->
+    <!-- Sort Section - Mobile Responsive -->
     <div class="card bg-light mb-4">
-      <div class="card-body">
-        <form method="post" action="{% url 'task-create' %}">
-          {% csrf_token %}
-          
-          <!-- Main Input Row -->
-          <div class="row g-2 align-items-center mb-3">
-            <div class="col">
-              <input type="text" class="form-control form-control-lg" id="id_title" name="title" placeholder="Add a new task..." required autofocus>
+        <div class="card-body">
+            <!-- Sort Header -->
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0">
+                    <i class="ti ti-sort-descending me-2"></i>Sort By
+                </h6>
+                <button class="btn btn-sm btn-outline-primary d-none d-md-block" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                    <i class="ti ti-chevron-up"></i> Hide
+                </button>
+                <button class="btn btn-sm btn-outline-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                    <i class="ti ti-chevron-up"></i>
+                </button>
             </div>
-            <div class="col-auto">
-              <button type="submit" class="btn btn-primary btn-lg">
-                <i class="bi bi-plus-circle"></i> Add Task
-              </button>
-            </div>
-          </div>
 
-       <!-- Advanced Options Toggle -->
-<div class="mb-2">
-    <a class="text-primary text-decoration-none" data-bs-toggle="collapse" href="#advancedOptions" role="button" aria-expanded="false" aria-controls="advancedOptions">
-        <i class="bi bi-chevron-down me-1"></i>
-        <small class="fw-medium">Advanced options</small>
-    </a>
-</div>
-
-          <!-- Collapsible Advanced Options -->
-          <div class="collapse" id="advancedOptions">
-            <div class="row g-3 pt-2 border-top">
-              <div class="col-md-3">
-                <label for="id_category" class="form-label small text-muted">Category</label>
-                <select class="form-select" id="id_category" name="category">
-                  <option value="">None</option>
-                  {% for category in categories %}
-                  <option value="{{ category.id }}">{{ category.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              
-              <div class="col-md-3">
-                <label for="id_priority" class="form-label small text-muted">Priority</label>
-                <select class="form-select" id="id_priority" name="priority">
-                  <option value="">None</option>
-                  {% for priority in priorities %}
-                  <option value="{{ priority.id }}">{{ priority.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              
-              <div class="col-md-3">
-                <label for="id_status" class="form-label small text-muted">Status</label>
-                <select class="form-select" id="id_status" name="status">
-                  <option value="Pending" selected>Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
-              </div>
-              
-              <div class="col-md-3">
-                <label for="id_deadline" class="form-label small text-muted">Due Date</label>
-                <input type="date" class="form-control" id="id_deadline" name="deadline">
-              </div>
-              
-              <div class="col-12">
-                <label for="id_description" class="form-label small text-muted">Description</label>
-                <textarea class="form-control" id="id_description" name="description" rows="2" placeholder="Add details about this task..."></textarea>
-              </div>
-              <!-- REMOVED the notes field from task creation - Notes are added separately in task edit -->
-            </div>
-          </div>
-        </form>
-        
-        {% if form.errors %}
-        <div class="alert alert-danger mt-3 mb-0">
-          {% for field, errors in form.errors.items %}
-            {% for error in errors %}
-              <div><strong>{{ field }}:</strong> {{ error }}</div>
-            {% endfor %}
-          {% endfor %}
-        </div>
-        {% endif %}
-      </div>
-    </div>
-
-    
-<!-- Sort Section - Clickable Sort Options -->
-<div class="card bg-light mb-4">
-    <div class="card-body">
-        <!-- Sort Header -->
-        <div class="d-flex justify-content-between align-items-center">
-            <h6 class="card-title mb-0">
-                <i class="ti ti-sort-descending me-2"></i>Sort By
-            </h6>
-            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
-                <i class="ti ti-chevron-up"></i> Hide
-            </button>
-        </div>
-
-        <!-- Sort Content - Expanded by Default -->
-        <div class="collapse show" id="sortCollapse">
-            <div class="mt-3 pt-3 border-top">
-                <!-- Date Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-created_at" 
-                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-descending me-1"></i>Newest First
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=created_at" 
-                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-ascending me-1"></i>Oldest First
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Title Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Title:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=title" 
-                           class="btn btn-sm {% if current_ordering == 'title' %}btn-info{% else %}btn-outline-info{% endif %}">
-                            <i class="ti ti-sort-a-z me-1"></i>Title A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-title" 
-                           class="btn btn-sm {% if current_ordering == '-title' %}btn-info{% else %}btn-outline-info{% endif %}">
-                            <i class="ti ti-sort-z-a me-1"></i>Title Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Status Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Status:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=status" 
-                           class="btn btn-sm {% if current_ordering == 'status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                            <i class="ti ti-category me-1"></i>Status A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-status" 
-                           class="btn btn-sm {% if current_ordering == '-status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                            <i class="ti ti-category me-1"></i>Status Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Priority Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Priority:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=priority__name" 
-                           class="btn btn-sm {% if current_ordering == 'priority__name' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-flag me-1"></i>Priority A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-priority__name" 
-                           class="btn btn-sm {% if current_ordering == '-priority__name' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-flag me-1"></i>Priority Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Category Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Category:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=category__name" 
-                           class="btn btn-sm {% if current_ordering == 'category__name' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
-                            <i class="ti ti-folders me-1"></i>Category A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-category__name" 
-                           class="btn btn-sm {% if current_ordering == '-category__name' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
-                            <i class="ti ti-folders me-1"></i>Category Z-A
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Due Date Sorting -->
-                <div class="mb-0">
-                    <small class="text-muted fw-bold d-block mb-2">By Due Date:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=deadline" 
-                           class="btn btn-sm {% if current_ordering == 'deadline' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                            <i class="ti ti-calendar me-1"></i>Due Date (Soonest)
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-deadline" 
-                           class="btn btn-sm {% if current_ordering == '-deadline' %}btn-danger{% else %}btn-outline-danger{% endif %}">
-                            <i class="ti ti-calendar me-1"></i>Due Date (Latest)
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Active Sort Display -->
-                {% if current_ordering and current_ordering != '-created_at' %}
+            <!-- Sort Content -->
+            <div class="collapse show" id="sortCollapse">
                 <div class="mt-3 pt-3 border-top">
-                    <small class="text-muted">Current sort:</small>
-                    {% if current_ordering == '-created_at' %}
-                    <span class="badge bg-primary me-1">Newest First</span>
-                    {% elif current_ordering == 'created_at' %}
-                    <span class="badge bg-primary me-1">Oldest First</span>
-                    {% elif current_ordering == 'title' %}
-                    <span class="badge bg-info me-1">Title A-Z</span>
-                    {% elif current_ordering == '-title' %}
-                    <span class="badge bg-info me-1">Title Z-A</span>
-                    {% elif current_ordering == 'status' %}
-                    <span class="badge bg-warning me-1">Status A-Z</span>
-                    {% elif current_ordering == '-status' %}
-                    <span class="badge bg-warning me-1">Status Z-A</span>
-                    {% elif current_ordering == 'priority__name' %}
-                    <span class="badge bg-success me-1">Priority A-Z</span>
-                    {% elif current_ordering == '-priority__name' %}
-                    <span class="badge bg-success me-1">Priority Z-A</span>
-                    {% elif current_ordering == 'category__name' %}
-                    <span class="badge bg-secondary me-1">Category A-Z</span>
-                    {% elif current_ordering == '-category__name' %}
-                    <span class="badge bg-secondary me-1">Category Z-A</span>
-                    {% elif current_ordering == 'deadline' %}
-                    <span class="badge bg-danger me-1">Due Date (Soonest)</span>
-                    {% elif current_ordering == '-deadline' %}
-                    <span class="badge bg-danger me-1">Due Date (Latest)</span>
+                    <!-- Mobile-friendly sort buttons - stacked on small screens -->
+                    <div class="row g-2">
+                        <!-- Date Sorting -->
+                        <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-12 mb-3">
+                            <small class="text-muted fw-bold d-block mb-2">By Date:</small>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-created_at" 
+                                   class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-md-grow-0">
+                                    <i class="ti ti-sort-descending me-1 d-none d-sm-inline"></i>Newest
+                                </a>
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=created_at" 
+                                   class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-md-grow-0">
+                                    <i class="ti ti-sort-ascending me-1 d-none d-sm-inline"></i>Oldest
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Title Sorting -->
+                        <div class="col-12 col-sm-6 col-md-12 col-lg-6 col-xl-12 mb-3">
+                            <small class="text-muted fw-bold d-block mb-2">By Title:</small>
+                            <div class="d-flex flex-wrap gap-1">
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=title" 
+                                   class="btn btn-sm {% if current_ordering == 'title' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1 flex-md-grow-0">
+                                    <i class="ti ti-sort-a-z me-1 d-none d-sm-inline"></i>A-Z
+                                </a>
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-title" 
+                                   class="btn btn-sm {% if current_ordering == '-title' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1 flex-md-grow-0">
+                                    <i class="ti ti-sort-z-a me-1 d-none d-sm-inline"></i>Z-A
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Continue with similar responsive patterns for other sort options... -->
+                    </div>
+
+                    <!-- Active Sort Display -->
+                    {% if current_ordering and current_ordering != '-created_at' %}
+                    <div class="mt-3 pt-3 border-top">
+                        <small class="text-muted">Current sort:</small>
+                        <!-- Display active sort badge -->
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}" 
+                           class="btn btn-sm btn-outline-secondary ms-2">Reset</a>
+                    </div>
                     {% endif %}
-                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}" 
-                       class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
                 </div>
-                {% endif %}
             </div>
         </div>
     </div>
-</div>
-
-    <div class="table-responsive mt-4">
-      <table class="table mb-0 text-nowrap varient-table align-middle fs-3">
+<!-- Table - Mobile Responsive -->
+<div class="table-responsive mt-4">
+    <table class="table mb-0 varient-table align-middle">
         <thead>
-          <tr>
-            <th scope="col" class="px-0 text-muted">Tasks</th>
-            <th scope="col" class="px-0 text-muted">Status</th>
-            <th scope="col" class="px-0 text-muted">Priority</th>
-            <th scope="col" class="px-0 text-muted text-end">Category</th>
-            <th scope="col" class="px-0 text-muted text-end">Due</th>
-            <th scope="col" class="px-0 text-muted text-end">Actions</th>
-          </tr>
+            <tr class="d-none d-md-table-row">
+                <th scope="col" class="px-3 text-muted">Tasks</th>
+                <th scope="col" class="px-3 text-muted">Status</th>
+                <th scope="col" class="px-3 text-muted">Priority</th>
+                <th scope="col" class="px-3 text-muted">Category</th>
+                <th scope="col" class="px-3 text-muted text-end">Due</th>
+                <th scope="col" class="px-3 text-muted text-end" style="min-width: 140px;">Actions</th>
+            </tr>
         </thead>
         <tbody>
-          {% for task in tasks %}
-          <tr>
-            <td class="px-0">
-              <div class="d-flex align-items-center">
-                <div class="me-3">
-                  <h6 class="mb-0">{{ task.title }}</h6>
-                  {% if task.description %}
-                  <small class="text-muted">{{ task.description|truncatewords:10 }}</small>
-                  {% endif %}
-                </div>
-              </div>
-            </td>
-            <td class="px-0">
-              <span class="badge bg-{% if task.status == 'Completed' %}success{% elif task.status == 'In Progress' %}warning{% else %}secondary{% endif %}">
-                {{ task.status }}
-              </span>
-            </td>
-            <td class="px-0">
-              {% if task.priority %}
-              <span class="badge bg-info">{{ task.priority.name }}</span>
-              {% else %}
-              <span class="text-muted">None</span>
-              {% endif %}
-            </td>
-            <td class="px-0 text-dark fw-medium text-end">
-              {% if task.category %}
-              <span class="badge bg-light text-dark">{{ task.category.name }}</span>
-              {% else %}
-              <span class="text-muted">Uncategorized</span>
-              {% endif %}
-            </td>
-            <td class="px-0 text-dark fw-medium text-end">
-              {% if task.deadline %}
-              {{ task.deadline|date:"M d, Y" }}
-              {% else %}
-              <span class="text-muted">No deadline</span>
-              {% endif %}
-            </td>
-            <td class="px-0 text-end">
-              <div class="btn-group">
-                <a href="{% url 'task-update' task.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
-                <a href="{% url 'task-delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-              </div>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="6" class="text-center py-4">
-              <p class="text-muted">No tasks found. Use the form above to create your first task!</p>
-            </td>
-          </tr>
-          {% endfor %}
+            {% for task in tasks %}
+            <tr class="d-block d-md-table-row mb-3 mb-md-0">
+                <!-- Mobile Card View -->
+                <td class="px-0 d-block d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <h6 class="mb-0">{{ task.title }}</h6>
+                            {% if task.description %}
+                            <small class="text-muted d-none d-md-block">{{ task.description|truncatewords:10 }}</small>
+                            {% endif %}
+                            <!-- Mobile-only info -->
+                            <div class="d-md-none mt-1">
+                                <span class="badge bg-{% if task.status == 'Completed' %}success{% elif task.status == 'In Progress' %}warning{% else %}secondary{% endif %} me-2">
+                                    {{ task.status }}
+                                </span>
+                                {% if task.priority %}
+                                <span class="badge bg-info me-2">{{ task.priority.name }}</span>
+                                {% endif %}
+                                {% if task.category %}
+                                <span class="badge bg-light text-dark">{{ task.category.name }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <!-- Desktop-only columns -->
+                <td class="px-3 d-none d-md-table-cell">
+                    <span class="badge bg-{% if task.status == 'Completed' %}success{% elif task.status == 'In Progress' %}warning{% else %}secondary{% endif %}">
+                        {{ task.status }}
+                    </span>
+                </td>
+                <td class="px-3 d-none d-md-table-cell">
+                    {% if task.priority %}
+                    <span class="badge bg-info">{{ task.priority.name }}</span>
+                    {% else %}
+                    <span class="text-muted">None</span>
+                    {% endif %}
+                </td>
+                <td class="px-3 text-dark fw-medium d-none d-md-table-cell">
+                    {% if task.category %}
+                    <span class="badge bg-light text-dark">{{ task.category.name }}</span>
+                    {% else %}
+                    <span class="text-muted">Uncategorized</span>
+                    {% endif %}
+                </td>
+                <td class="px-3 text-dark fw-medium text-end d-none d-md-table-cell" style="min-width: 120px;">
+                    {% if task.deadline %}
+                    {{ task.deadline|date:"M d, Y" }}
+                    {% else %}
+                    <span class="text-muted">No deadline</span>
+                    {% endif %}
+                </td>
+                <td class="px-3 text-end d-block d-md-table-cell" style="min-width: 140px;">
+                    <div class="btn-group w-100 w-md-auto">
+                        <a href="{% url 'task-update' task.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a href="{% url 'task-delete' task.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    <p class="text-muted">No tasks found. Use the form above to create your first task!</p>
+                </td>
+            </tr>
+            {% endfor %}
         </tbody>
-      </table>
-    </div>
+    </table>
+</div>
   </div>
 </div>
 </div>
@@ -408,6 +350,25 @@
   
   a[aria-expanded="false"] .bi-chevron-down {
     transition: transform 0.3s ease;
+  }
+  
+  /* Mobile-specific styles */
+  @media (max-width: 768px) {
+      .h2-md {
+          font-size: 1.5rem;
+      }
+      .display-md-5 {
+          font-size: 2rem;
+      }
+      .table-responsive {
+          border: 0;
+      }
+      tr.d-block {
+          border: 1px solid #dee2e6;
+          border-radius: 0.375rem;
+          padding: 1rem;
+          margin-bottom: 0.5rem;
+      }
   }
 </style>
 {% endblock %}

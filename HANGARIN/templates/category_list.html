@@ -2,179 +2,194 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
+<div class="container mt-3 mt-md-5 pt-4">
     <div class="card">
         <div class="card-body">
-            <!-- Search Form -->
+            <!-- Search Form - Mobile Responsive -->
             <div class="card bg-light mb-4">
                 <div class="card-body">
-                    <form method="get" action="{% url 'category-list' %}" class="d-flex gap-2 align-items-end">
-                        <!-- Search Input -->
-                        <div class="flex-grow-1">
-                            <label class="form-label small text-muted">Search Categories</label>
-                            <input type="text" 
-                                   name="q" 
-                                   class="form-control" 
-                                   placeholder="Search by category name..." 
-                                   value="{{ request.GET.q }}">
+                    <form method="get" action="{% url 'category-list' %}">
+                        <div class="row g-2 align-items-end">
+                            <!-- Search Input -->
+                            <div class="col-12 col-md-8">
+                                <label class="form-label small text-muted">Search Categories</label>
+                                <input type="text" 
+                                       name="q" 
+                                       class="form-control" 
+                                       placeholder="Search by category name..." 
+                                       value="{{ request.GET.q }}">
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="col-12 col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="ti ti-search me-1 d-none d-md-inline"></i>
+                                        <span class="d-md-none">Search</span>
+                                        <span class="d-none d-md-inline">Search</span>
+                                    </button>
+                                    
+                                    {% if request.GET.q %}
+                                    <a href="{% url 'category-list' %}" class="btn btn-outline-secondary">
+                                        <i class="ti ti-x d-md-none"></i>
+                                        <span class="d-none d-md-inline">Clear</span>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        
-                        <!-- Search Button -->
-                        <div>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="ti ti-search me-1"></i>Search
-                            </button>
-                        </div>
-                        
-                        <!-- Clear Button -->
-                        {% if request.GET.q %}
-                        <div>
-                            <a href="{% url 'category-list' %}" class="btn btn-outline-secondary">Clear Search</a>
-                        </div>
-                        {% endif %}
                     </form>
                 </div>
             </div>
 
-            <!-- Header Section -->
-            <div class="d-md-flex align-items-center mb-4">
-                <div>
+            <!-- Header Section - Mobile Responsive -->
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4">
+                <div class="mb-2 mb-md-0">
                     <h4 class="card-title">Categories</h4>
                     <p class="card-subtitle">{{ categories.count }} category(s) found</p>
                     {% if request.GET.q %}
-                    <p class="text-muted small">Search results for: "{{ request.GET.q }}"</p>
+                    <p class="text-muted small mb-0">Search results for: "{{ request.GET.q }}"</p>
                     {% endif %}
                 </div>
-                <div class="ms-auto">
+                <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
                     <a href="{% url 'category_create' %}" class="btn btn-primary">
                         <i class="ti ti-plus me-1"></i>Add New Category
                     </a>
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                        Back to Dashboard
+                    </a>
                 </div>
             </div>
 
-            <!-- Sort Options -->
-            <div class="d-flex gap-2 mb-3">
-                <small class="text-muted align-self-center">Sort by:</small>
-                <a href="?ordering=-created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-                   class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    <i class="ti ti-sort-descending me-1"></i>Newest
-                </a>
-                <a href="?ordering=created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-                   class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    <i class="ti ti-sort-ascending me-1"></i>Oldest
-                </a>
-                <a href="?ordering=name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-                   class="btn btn-sm {% if current_ordering == 'name' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    <i class="ti ti-sort-a-z me-1"></i>Name A-Z
-                </a>
-                <a href="?ordering=-name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-                   class="btn btn-sm {% if current_ordering == '-name' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                    <i class="ti ti-sort-z-a me-1"></i>Name Z-A
-                </a>
+            <!-- Sort Options - Mobile Responsive -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <small class="text-muted">Sort by:</small>
+                        <div class="d-flex flex-wrap gap-1">
+                            <a href="?ordering=-created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                               class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-sm-grow-0">
+                                <i class="ti ti-sort-descending me-1 d-none d-sm-inline"></i>Newest
+                            </a>
+                            <a href="?ordering=created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                               class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-sm-grow-0">
+                                <i class="ti ti-sort-ascending me-1 d-none d-sm-inline"></i>Oldest
+                            </a>
+                            <a href="?ordering=name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                               class="btn btn-sm {% if current_ordering == 'name' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-sm-grow-0">
+                                <i class="ti ti-sort-a-z me-1 d-none d-sm-inline"></i>A-Z
+                            </a>
+                            <a href="?ordering=-name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                               class="btn btn-sm {% if current_ordering == '-name' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1 flex-sm-grow-0">
+                                <i class="ti ti-sort-z-a me-1 d-none d-sm-inline"></i>Z-A
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Categories Table -->
-            <div class="table-responsive">
-                <table class="table mb-0 text-nowrap varient-table align-middle fs-3">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="px-0 text-muted">
-                                Category Name
-                                {% if current_ordering == 'name' %}↑{% elif current_ordering == '-name' %}↓{% endif %}
-                            </th>
-                            <th scope="col" class="px-0 text-muted">Tasks Count</th>
-                            <th scope="col" class="px-0 text-muted">
-                                Created Date
-                                {% if current_ordering == 'created_at' %}↑{% elif current_ordering == '-created_at' %}↓{% endif %}
-                            </th>
-                            <th scope="col" class="px-0 text-muted text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for category in categories %}
-                        <tr>
-                            <td class="px-0">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <i class="ti ti-folder text-primary fs-4"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-0">{{ category.name }}</h6>
-                                        <a href="{% url 'category_tasks' category.id %}" class="text-muted small text-decoration-none">
-                                            View tasks in this category
+            <!-- Categories Grid - Mobile Responsive -->
+            <div class="row">
+                {% for category in categories %}
+                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <!-- Category Header -->
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="me-3">
+                                    <i class="ti ti-folder text-primary fs-3"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-1">{{ category.name }}</h6>
+                                    <small class="text-muted">{{ category.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Tasks Count -->
+                            <div class="mb-3">
+                                <span class="badge bg-light text-dark">
+                                    {{ category.task_set.count }} task(s)
+                                </span>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-auto">
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'category_tasks' category.id %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="ti ti-list me-1"></i>View Tasks
+                                    </a>
+                                    <div class="btn-group w-100">
+                                        <a href="{% url 'category-update' category.id %}" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                            <i class="ti ti-edit me-1 d-none d-sm-inline"></i>
+                                            <span class="d-sm-none">Edit</span>
+                                            <span class="d-none d-sm-inline">Edit</span>
+                                        </a>
+                                        <a href="{% url 'category-delete' category.id %}" class="btn btn-outline-danger btn-sm flex-grow-1">
+                                            <i class="ti ti-trash me-1 d-none d-sm-inline"></i>
+                                            <span class="d-sm-none">Delete</span>
+                                            <span class="d-none d-sm-inline">Delete</span>
                                         </a>
                                     </div>
                                 </div>
-                            </td>
-                            <td class="px-0">
-                                <span class="badge bg-light text-dark fs-3">
-                                    {{ category.task_set.count }} task(s)
-                                </span>
-                            </td>
-                            <td class="px-0">
-                                <small class="text-muted">{{ category.created_at|date:"M d, Y" }}</small>
-                            </td>
-                            <td class="px-0 text-end">
-                                <div class="btn-group">
-                                    <a href="{% url 'category-update' category.id %}" class="btn btn-sm btn-outline-primary">
-                                        <i class="ti ti-edit me-1"></i>Edit
-                                    </a>
-                                    <a href="{% url 'category-delete' category.id %}" class="btn btn-sm btn-outline-danger">
-                                        <i class="ti ti-trash me-1"></i>Delete
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center py-4">
-                                <div class="py-5">
-                                    <i class="ti ti-folders text-muted fs-1"></i>
-                                    <p class="text-muted mt-3">
-                                        {% if request.GET.q %}
-                                        No categories found matching "{{ request.GET.q }}".
-                                        {% else %}
-                                        No categories found.
-                                        {% endif %}
-                                    </p>
-                                    <a href="{% url 'category_create' %}" class="btn btn-primary mt-2">
-                                        <i class="ti ti-plus me-1"></i>Create Your First Category
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="ti ti-folders text-muted fs-1"></i>
+                        <p class="text-muted mt-3">
+                            {% if request.GET.q %}
+                            No categories found matching "{{ request.GET.q }}".
+                            {% else %}
+                            No categories found.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'category_create' %}" class="btn btn-primary mt-2">
+                            <i class="ti ti-plus me-1"></i>Create Your First Category
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
 
-            <!-- Pagination -->
+            <!-- Pagination - Mobile Responsive -->
             {% if is_paginated %}
             <nav class="mt-4">
-                <ul class="pagination justify-content-center">
+                <ul class="pagination justify-content-center flex-wrap">
                     {% if page_obj.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">Previous</a>
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <i class="ti ti-chevron-left"></i>
+                            <span class="d-none d-sm-inline">Previous</span>
+                        </a>
                     </li>
                     {% endif %}
                     
                     {% for num in page_obj.paginator.page_range %}
-                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
                         <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">{{ num }}</a>
                     </li>
+                    {% endif %}
                     {% endfor %}
                     
                     {% if page_obj.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">Next</a>
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <span class="d-none d-sm-inline">Next</span>
+                            <i class="ti ti-chevron-right"></i>
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
             </nav>
             {% endif %}
-
-            
         </div>
     </div>
 </div>

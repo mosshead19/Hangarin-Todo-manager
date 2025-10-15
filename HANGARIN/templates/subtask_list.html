@@ -2,168 +2,204 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5 pt-4">
+<div class="container mt-3 mt-md-5 pt-4">
     <div class="card">
         <div class="card-body">
-           <!-- Search and Sort Form -->
-<div class="card bg-light mb-4">
-    <div class="card-body">
-        <form method="get" action="{% url 'subtask-list' %}" class="d-flex gap-2 align-items-end">
-            <!-- Search Input -->
-            <div class="flex-grow-1">
-                <label class="form-label small text-muted">Search Subtasks</label>
-                <input type="text" 
-                       name="q" 
-                       class="form-control" 
-                       placeholder="Search by subtask title or parent task..." 
-                       value="{{ request.GET.q }}">
+            <!-- Search Form - Mobile Responsive -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <form method="get" action="{% url 'subtask-list' %}">
+                        <div class="row g-2 align-items-end">
+                            <!-- Search Input -->
+                            <div class="col-12 col-md-8">
+                                <label class="form-label small text-muted">Search Subtasks</label>
+                                <input type="text" 
+                                       name="q" 
+                                       class="form-control" 
+                                       placeholder="Search by subtask title or parent task..." 
+                                       value="{{ request.GET.q }}">
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="col-12 col-md-4">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="ti ti-search me-1 d-none d-md-inline"></i>
+                                        <span class="d-md-none">Search</span>
+                                        <span class="d-none d-md-inline">Search</span>
+                                    </button>
+                                    
+                                    {% if request.GET.q or request.GET.ordering != '-created_at' %}
+                                    <a href="{% url 'subtask-list' %}" class="btn btn-outline-secondary">
+                                        <i class="ti ti-x d-md-none"></i>
+                                        <span class="d-none d-md-inline">Clear All</span>
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            
-        
-            
-            <!-- Search Button -->
-            <div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="ti ti-search me-1"></i>Search
-                </button>
-            </div>
-            
-            <!-- Clear Button -->
-            {% if request.GET.q or request.GET.ordering != '-created_at' %}
-            <div>
-                <a href="{% url 'subtask-list' %}" class="btn btn-outline-secondary">Clear All</a>
-            </div>
-            {% endif %}
-        </form>
-    </div>
-</div>
-            <div class="d-md-flex align-items-center mb-4">
-                <div>
+
+            <!-- Header Section - Mobile Responsive -->
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between mb-4">
+                <div class="mb-2 mb-md-0">
                     <h4 class="card-title">Subtasks</h4>
                     <p class="card-subtitle">
                         {{ subtasks.count }} subtask(s) found
                     </p>
                 </div>
-                <div class="ms-auto">
-                    <!-- ADD SUBTASK BUTTON -->
-                    <a href="{% url 'subtask-create' %}" class="btn btn-primary me-2">
+                <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                    <a href="{% url 'subtask-create' %}" class="btn btn-primary">
                         <i class="ti ti-plus me-1"></i>Add Subtask
                     </a>
-                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                        Back to Tasks
+                    </a>
                 </div>
             </div>
-<!-- Sort Section - Clickable Sort Options -->
-<div class="card bg-light mb-4">
-    <div class="card-body">
-        <!-- Sort Header -->
-        <div class="d-flex justify-content-between align-items-center">
-            <h6 class="card-title mb-0">
-                <i class="ti ti-sort-descending me-2"></i>Sort Subtasks By
-            </h6>
-            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
-                <i class="ti ti-chevron-up"></i> Hide
-            </button>
-        </div>
 
-        <!-- Sort Content - Expanded by Default -->
-        <div class="collapse show" id="sortCollapse">
-            <div class="mt-3 pt-3 border-top">
-                <!-- Date Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-created_at" 
-                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-descending me-1"></i>Newest First
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=created_at" 
-                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
-                            <i class="ti ti-sort-ascending me-1"></i>Oldest First
-                        </a>
+            <!-- Sort Section - Mobile Responsive -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <!-- Sort Header -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="card-title mb-0">
+                            <i class="ti ti-sort-descending me-2"></i>Sort Subtasks By
+                        </h6>
+                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                            <i class="ti ti-chevron-up d-none d-md-inline"></i>
+                            <span class="d-md-none">Toggle</span>
+                            <span class="d-none d-md-inline">Hide</span>
+                        </button>
                     </div>
-                </div>
 
-            
+                    <!-- Sort Content - Expanded by Default -->
+                    <div class="collapse show" id="sortCollapse">
+                        <div class="mt-3 pt-3 border-top">
+                            <div class="row g-2">
+                                <!-- Date Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-created_at" 
+                                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-descending me-1 d-none d-sm-inline"></i>Newest
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=created_at" 
+                                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-ascending me-1 d-none d-sm-inline"></i>Oldest
+                                        </a>
+                                    </div>
+                                </div>
 
-                <!-- Status Sorting -->
-                <div class="mb-3">
-                    <small class="text-muted fw-bold d-block mb-2">By Status:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=status" 
-                           class="btn btn-sm {% if current_ordering == 'status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                            <i class="ti ti-category me-1"></i>Status A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-status" 
-                           class="btn btn-sm {% if current_ordering == '-status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
-                            <i class="ti ti-category me-1"></i>Status Z-A
-                        </a>
-                    </div>
-                </div>
+                                <!-- Title Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Title:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=title" 
+                                           class="btn btn-sm {% if current_ordering == 'title' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-a-z me-1 d-none d-sm-inline"></i>A-Z
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-title" 
+                                           class="btn btn-sm {% if current_ordering == '-title' %}btn-info{% else %}btn-outline-info{% endif %} flex-grow-1">
+                                            <i class="ti ti-sort-z-a me-1 d-none d-sm-inline"></i>Z-A
+                                        </a>
+                                    </div>
+                                </div>
 
-                <!-- Parent Task Sorting -->
-                <div class="mb-0">
-                    <small class="text-muted fw-bold d-block mb-2">By Parent Task:</small>
-                    <div class="d-flex flex-wrap gap-1">
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=parent_task__title" 
-                           class="btn btn-sm {% if current_ordering == 'parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-checklist me-1"></i>Parent Task A-Z
-                        </a>
-                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-parent_task__title" 
-                           class="btn btn-sm {% if current_ordering == '-parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
-                            <i class="ti ti-checklist me-1"></i>Parent Task Z-A
-                        </a>
-                    </div>
-                </div>
+                                <!-- Status Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Status:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=status" 
+                                           class="btn btn-sm {% if current_ordering == 'status' %}btn-warning{% else %}btn-outline-warning{% endif %} flex-grow-1">
+                                            <i class="ti ti-category me-1 d-none d-sm-inline"></i>A-Z
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-status" 
+                                           class="btn btn-sm {% if current_ordering == '-status' %}btn-warning{% else %}btn-outline-warning{% endif %} flex-grow-1">
+                                            <i class="ti ti-category me-1 d-none d-sm-inline"></i>Z-A
+                                        </a>
+                                    </div>
+                                </div>
 
-                <!-- Active Sort Display -->
-                {% if current_ordering and current_ordering != '-created_at' %}
-                <div class="mt-3 pt-3 border-top">
-                    <small class="text-muted">Current sort:</small>
-                    {% if current_ordering == '-created_at' %}
-                    <span class="badge bg-primary me-1">Newest First</span>
-                    {% elif current_ordering == 'created_at' %}
-                    <span class="badge bg-primary me-1">Oldest First</span>
-                    {% elif current_ordering == 'title' %}
-                    <span class="badge bg-info me-1">Title A-Z</span>
-                    {% elif current_ordering == '-title' %}
-                    <span class="badge bg-info me-1">Title Z-A</span>
-                    {% elif current_ordering == 'status' %}
-                    <span class="badge bg-warning me-1">Status A-Z</span>
-                    {% elif current_ordering == '-status' %}
-                    <span class="badge bg-warning me-1">Status Z-A</span>
-                    {% elif current_ordering == 'parent_task__title' %}
-                    <span class="badge bg-success me-1">Parent Task A-Z</span>
-                    {% elif current_ordering == '-parent_task__title' %}
-                    <span class="badge bg-success me-1">Parent Task Z-A</span>
-                    {% endif %}
-                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" 
-                       class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-            <div class="row">
-                {% for subtask in subtasks %}
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <!-- Subtask Title -->
-                            <h6 class="card-title mb-2">{{ subtask.title }}</h6>
-                            
-                            <!-- Status and Parent Task -->
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="badge bg-{% if subtask.status == 'Completed' %}success{% elif subtask.status == 'In Progress' %}warning{% else %}secondary{% endif %}">
-                                    {{ subtask.status }}
-                                </span>
-                                <small class="text-muted">{{ subtask.created_at|date:"M d, Y" }}</small>
+                                <!-- Parent Task Sorting -->
+                                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                                    <small class="text-muted fw-bold d-block mb-2">By Parent Task:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=parent_task__title" 
+                                           class="btn btn-sm {% if current_ordering == 'parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %} flex-grow-1">
+                                            <i class="ti ti-checklist me-1 d-none d-sm-inline"></i>A-Z
+                                        </a>
+                                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-parent_task__title" 
+                                           class="btn btn-sm {% if current_ordering == '-parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %} flex-grow-1">
+                                            <i class="ti ti-checklist me-1 d-none d-sm-inline"></i>Z-A
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
 
-                            <!-- Parent Task and Actions -->
-                            <div class="d-flex justify-content-between align-items-center">
+                            <!-- Active Sort Display -->
+                            {% if current_ordering and current_ordering != '-created_at' %}
+                            <div class="mt-3 pt-3 border-top">
+                                <small class="text-muted">Current sort:</small>
+                                {% if current_ordering == '-created_at' %}
+                                <span class="badge bg-primary me-1">Newest First</span>
+                                {% elif current_ordering == 'created_at' %}
+                                <span class="badge bg-primary me-1">Oldest First</span>
+                                {% elif current_ordering == 'title' %}
+                                <span class="badge bg-info me-1">Title A-Z</span>
+                                {% elif current_ordering == '-title' %}
+                                <span class="badge bg-info me-1">Title Z-A</span>
+                                {% elif current_ordering == 'status' %}
+                                <span class="badge bg-warning me-1">Status A-Z</span>
+                                {% elif current_ordering == '-status' %}
+                                <span class="badge bg-warning me-1">Status Z-A</span>
+                                {% elif current_ordering == 'parent_task__title' %}
+                                <span class="badge bg-success me-1">Parent Task A-Z</span>
+                                {% elif current_ordering == '-parent_task__title' %}
+                                <span class="badge bg-success me-1">Parent Task Z-A</span>
+                                {% endif %}
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" 
+                                   class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subtasks Grid - Mobile Responsive -->
+            <div class="row">
+                {% for subtask in subtasks %}
+                <div class="col-12 col-sm-6 col-lg-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <!-- Subtask Title and Status (Top) -->
+                            <div class="mb-3">
+                                <h6 class="card-title mb-1">{{ subtask.title|truncatewords:8 }}</h6>
+                                <span class="badge {% if subtask.status == 'completed' %}bg-success{% elif subtask.status == 'in_progress' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                    {{ subtask.status|title }}
+                                </span>
+                            </div>
+                            
+                            <!-- Parent Task and Due Date (Middle) -->
+                            <div class="mb-3 flex-grow-1">
+                                <small class="text-muted d-block mb-1">
+                                    <strong>Parent Task:</strong> {{ subtask.parent_task.title|truncatewords:4 }}
+                                </small>
+                                {% if subtask.due_date %}
                                 <small class="text-muted">
-                                    <strong>Parent:</strong> {{ subtask.parent_task.title }}
+                                    <strong>Due:</strong> {{ subtask.due_date|date:"M d, Y" }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Action Buttons (Bottom) -->
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <small class="text-muted">
+                                    {{ subtask.created_at|date:"M d, Y" }}
                                 </small>
                                 <div class="btn-group">
                                     <a href="{% url 'subtask-update' subtask.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
@@ -176,16 +212,57 @@
                 {% empty %}
                 <div class="col-12">
                     <div class="text-center py-5">
-                        <p class="text-muted">No subtasks found.</p>
-                        <!-- ADD SUBTASK BUTTON IN EMPTY STATE -->
-                        <a href="{% url 'subtask-create' %}" class="btn btn-primary me-2">
-                            <i class="ti ti-plus me-1"></i>Add Your First Subtask
+                        <p class="text-muted">
+                            {% if request.GET.q %}
+                            No subtasks found matching "{{ request.GET.q }}".
+                            {% else %}
+                            No subtasks found.
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'subtask-create' %}" class="btn btn-primary">
+                            <i class="ti ti-plus me-1"></i>Create Your First Subtask
                         </a>
-                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">View Tasks</a>
                     </div>
                 </div>
                 {% endfor %}
             </div>
+
+            <!-- Pagination - Mobile Responsive -->
+            {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center flex-wrap">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <i class="ti ti-chevron-left"></i>
+                            <span class="d-none d-sm-inline">Previous</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">
+                            <span class="d-none d-sm-inline">Next</span>
+                            <i class="ti ti-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>
