@@ -174,35 +174,7 @@
             </nav>
             {% endif %}
 
-            <!-- Quick Stats -->
-            {% if categories %}
-            <div class="row mt-4 pt-3 border-top">
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-primary">{{ categories.count }}</h3>
-                            <p class="text-muted mb-0">Total Categories</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">{{ total_tasks }}</h3>
-                            <p class="text-muted mb-0">Total Tasks</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">{{ average_tasks_per_category }}</h3>
-                            <p class="text-muted mb-0">Avg Tasks per Category</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
+            
         </div>
     </div>
 </div>

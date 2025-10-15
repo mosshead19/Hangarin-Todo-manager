@@ -286,17 +286,47 @@ class PriorityListView(ListView):
     model = Priority
     template_name = 'priority_list.html'
     context_object_name = 'priorities'
+    paginate_by = 10
+
+    def get_ordering(self):
+        allowed = [
+            "created_at", "-created_at",
+            "name", "-name"
+        ]
+        sort_by = self.request.GET.get("ordering")
+        if sort_by in allowed:
+            return sort_by
+        return "-created_at"  # Default ordering
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            qs = qs.filter(name__icontains=query)
+        return qs
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        priorities = self.get_queryset()
+        
+        # Calculate statistics
+        total_tasks = Task.objects.count()
+        priority_count = Priority.objects.count()  # Use all priorities for stats
+        
         context['categories'] = Category.objects.all()
+        context['priorities'] = priorities
+        context['total_tasks'] = total_tasks
+        context['average_tasks_per_priority'] = round(total_tasks / priority_count, 1) if priority_count > 0 else 0
+        context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
+        
         return context
     
 class PriorityCreateView(CreateView):
     model = Priority
     fields = ['name']
     template_name = 'priority_form.html'
-    success_url = reverse_lazy('dashboard')
+    success_url = reverse_lazy('priority-list')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

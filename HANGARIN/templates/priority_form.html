@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <a href="{% url 'priority-list' %}" class="btn btn-outline-secondary btn-sm me-2">
+                            <i class="ti ti-arrow-left"></i>
+                        </a>
+                        <h4 class="card-title mb-0">
+                            {% if object %}Edit{% else %}Create New{% endif %} Priority
+                        </h4>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">Priority Name</label>
+                            <input type="text" 
+                                   class="form-control {% if form.name.errors %}is-invalid{% endif %}" 
+                                   id="id_name" 
+                                   name="name" 
+                                   value="{{ form.name.value|default:'' }}"
+                                   placeholder="Enter priority name (e.g., High, Medium, Low)"
+                                   required>
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="form-text">
+                                Choose a descriptive name for the priority level.
+                            </div>
+                        </div>
+
+                        <!-- Common Priority Examples -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="card-title">Common Priority Examples:</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-danger">Critical</span>
+                                    <span class="badge bg-warning">High</span>
+                                    <span class="badge bg-info">Medium</span>
+                                    <span class="badge bg-success">Low</span>
+                                    <span class="badge bg-secondary">Optional</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-check me-1"></i>
+                                {% if object %}Update{% else %}Create{% endif %} Priority
+                            </button>
+                            <a href="{% url 'priority-list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger mt-3">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

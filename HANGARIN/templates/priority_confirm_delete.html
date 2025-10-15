@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <!-- Warning Icon -->
+                    <div class="mb-4">
+                        <i class="ti ti-alert-triangle text-warning" style="font-size: 4rem;"></i>
+                    </div>
+
+                    <h4 class="card-title text-danger mb-3">Delete Priority</h4>
+                    
+                    <!-- Confirmation Message -->
+                    <div class="alert alert-warning mb-4">
+                        <p class="mb-2"><strong>Are you sure you want to delete "{{ object.name }}"?</strong></p>
+                        <p class="mb-0 small">
+                            This action cannot be undone. All tasks associated with this priority will have their priority set to None.
+                        </p>
+                    </div>
+
+                    <!-- Affected Tasks Warning -->
+                    {% if object.task_set.count > 0 %}
+                    <div class="alert alert-info mb-4">
+                        <p class="mb-1"><strong>Note:</strong> This priority is currently used by {{ object.task_set.count }} task(s).</p>
+                        <p class="mb-0 small">These tasks will lose their priority setting after deletion.</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Delete Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="ti ti-trash me-1"></i>Yes, Delete Priority
+                            </button>
+                            <a href="{% url 'priority-list' %}" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
