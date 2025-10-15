@@ -19,22 +19,6 @@
                        value="{{ request.GET.q }}">
             </div>
             
-            <!-- Sort Dropdown -->
-            <div>
-                <label class="form-label small text-muted">Sort By</label>
-                <select name="ordering" class="form-select" onchange="this.form.submit()">
-                    <option value="-created_at" {% if current_ordering == '-created_at' %}selected{% endif %}>Newest First</option>
-                    <option value="created_at" {% if current_ordering == 'created_at' %}selected{% endif %}>Oldest First</option>
-                    <option value="title" {% if current_ordering == 'title' %}selected{% endif %}>Title A-Z</option>
-                    <option value="-title" {% if current_ordering == '-title' %}selected{% endif %}>Title Z-A</option>
-                    <option value="status" {% if current_ordering == 'status' %}selected{% endif %}>Status</option>
-                    <option value="-status" {% if current_ordering == '-status' %}selected{% endif %}>Status (Reverse)</option>
-                    <option value="priority__name" {% if current_ordering == 'priority__name' %}selected{% endif %}>Priority A-Z</option>
-                    <option value="-priority__name" {% if current_ordering == '-priority__name' %}selected{% endif %}>Priority Z-A</option>
-                    <option value="deadline" {% if current_ordering == 'deadline' %}selected{% endif %}>Due Date (Soonest)</option>
-                    <option value="-deadline" {% if current_ordering == '-deadline' %}selected{% endif %}>Due Date (Latest)</option>
-                </select>
-            </div>
             
             <!-- Search Button -->
             <div>

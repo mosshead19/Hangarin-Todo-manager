@@ -19,20 +19,7 @@
                        value="{{ request.GET.q }}">
             </div>
             
-            <!-- Sort Dropdown -->
-            <div>
-                <label class="form-label small text-muted">Sort By</label>
-                <select name="ordering" class="form-select" onchange="this.form.submit()">
-                    <option value="-created_at" {% if current_ordering == '-created_at' %}selected{% endif %}>Newest First</option>
-                    <option value="created_at" {% if current_ordering == 'created_at' %}selected{% endif %}>Oldest First</option>
-                    <option value="title" {% if current_ordering == 'title' %}selected{% endif %}>Title A-Z</option>
-                    <option value="-title" {% if current_ordering == '-title' %}selected{% endif %}>Title Z-A</option>
-                    <option value="status" {% if current_ordering == 'status' %}selected{% endif %}>Status</option>
-                    <option value="-status" {% if current_ordering == '-status' %}selected{% endif %}>Status (Reverse)</option>
-                    <option value="parent_task__title" {% if current_ordering == 'parent_task__title' %}selected{% endif %}>Parent Task A-Z</option>
-                    <option value="-parent_task__title" {% if current_ordering == '-parent_task__title' %}selected{% endif %}>Parent Task Z-A</option>
-                </select>
-            </div>
+        
             
             <!-- Search Button -->
             <div>
@@ -65,7 +52,98 @@
                     <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Tasks</a>
                 </div>
             </div>
+<!-- Sort Section - Clickable Sort Options -->
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <!-- Sort Header -->
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="card-title mb-0">
+                <i class="ti ti-sort-descending me-2"></i>Sort Subtasks By
+            </h6>
+            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                <i class="ti ti-chevron-up"></i> Hide
+            </button>
+        </div>
 
+        <!-- Sort Content - Expanded by Default -->
+        <div class="collapse show" id="sortCollapse">
+            <div class="mt-3 pt-3 border-top">
+                <!-- Date Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-created_at" 
+                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="ti ti-sort-descending me-1"></i>Newest First
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=created_at" 
+                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="ti ti-sort-ascending me-1"></i>Oldest First
+                        </a>
+                    </div>
+                </div>
+
+            
+
+                <!-- Status Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Status:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=status" 
+                           class="btn btn-sm {% if current_ordering == 'status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            <i class="ti ti-category me-1"></i>Status A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-status" 
+                           class="btn btn-sm {% if current_ordering == '-status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            <i class="ti ti-category me-1"></i>Status Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Parent Task Sorting -->
+                <div class="mb-0">
+                    <small class="text-muted fw-bold d-block mb-2">By Parent Task:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=parent_task__title" 
+                           class="btn btn-sm {% if current_ordering == 'parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
+                            <i class="ti ti-checklist me-1"></i>Parent Task A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}ordering=-parent_task__title" 
+                           class="btn btn-sm {% if current_ordering == '-parent_task__title' %}btn-success{% else %}btn-outline-success{% endif %}">
+                            <i class="ti ti-checklist me-1"></i>Parent Task Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Active Sort Display -->
+                {% if current_ordering and current_ordering != '-created_at' %}
+                <div class="mt-3 pt-3 border-top">
+                    <small class="text-muted">Current sort:</small>
+                    {% if current_ordering == '-created_at' %}
+                    <span class="badge bg-primary me-1">Newest First</span>
+                    {% elif current_ordering == 'created_at' %}
+                    <span class="badge bg-primary me-1">Oldest First</span>
+                    {% elif current_ordering == 'title' %}
+                    <span class="badge bg-info me-1">Title A-Z</span>
+                    {% elif current_ordering == '-title' %}
+                    <span class="badge bg-info me-1">Title Z-A</span>
+                    {% elif current_ordering == 'status' %}
+                    <span class="badge bg-warning me-1">Status A-Z</span>
+                    {% elif current_ordering == '-status' %}
+                    <span class="badge bg-warning me-1">Status Z-A</span>
+                    {% elif current_ordering == 'parent_task__title' %}
+                    <span class="badge bg-success me-1">Parent Task A-Z</span>
+                    {% elif current_ordering == '-parent_task__title' %}
+                    <span class="badge bg-success me-1">Parent Task Z-A</span>
+                    {% endif %}
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}" 
+                       class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
             <div class="row">
                 {% for subtask in subtasks %}
                 <div class="col-md-6 col-lg-4 mb-3">

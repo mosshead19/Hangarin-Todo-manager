@@ -6,7 +6,7 @@
 <div class="container mt-5 pt-4">
 <div class="card">
   <div class="card-body">
-    <!-- Search and Sort Form -->
+   <!-- Search and Sort Form -->
 <div class="card bg-light mb-4">
     <div class="card-body">
         <form method="get" action="{% url 'dashboard' %}" class="d-flex gap-2 align-items-end">
@@ -20,25 +20,7 @@
                        value="{{ request.GET.q }}">
             </div>
             
-            <!-- Sort Dropdown -->
-            <div>
-                <label class="form-label small text-muted">Sort By</label>
-                <select name="ordering" class="form-select" onchange="this.form.submit()">
-                    <option value="-created_at" {% if current_ordering == '-created_at' %}selected{% endif %}>Newest First</option>
-                    <option value="created_at" {% if current_ordering == 'created_at' %}selected{% endif %}>Oldest First</option>
-                    <option value="title" {% if current_ordering == 'title' %}selected{% endif %}>Title A-Z</option>
-                    <option value="-title" {% if current_ordering == '-title' %}selected{% endif %}>Title Z-A</option>
-                    <option value="status" {% if current_ordering == 'status' %}selected{% endif %}>Status</option>
-                    <option value="-status" {% if current_ordering == '-status' %}selected{% endif %}>Status (Reverse)</option>
-                    <option value="priority__name" {% if current_ordering == 'priority__name' %}selected{% endif %}>Priority A-Z</option>
-                    <option value="-priority__name" {% if current_ordering == '-priority__name' %}selected{% endif %}>Priority Z-A</option>
-                    <option value="category__name" {% if current_ordering == 'category__name' %}selected{% endif %}>Category A-Z</option>
-                    <option value="-category__name" {% if current_ordering == '-category__name' %}selected{% endif %}>Category Z-A</option>
-                    <option value="deadline" {% if current_ordering == 'deadline' %}selected{% endif %}>Due Date (Soonest)</option>
-                    <option value="-deadline" {% if current_ordering == '-deadline' %}selected{% endif %}>Due Date (Latest)</option>
-                </select>
-            </div>
-            
+           
             <!-- Search Button -->
             <div>
                 <button type="submit" class="btn btn-primary">
@@ -47,7 +29,7 @@
             </div>
             
             <!-- Clear Button -->
-            {% if request.GET.q or request.GET.ordering != '-created_at' %}
+            {% if request.GET.q or request.GET.ordering != '-created_at' or request.GET.status or request.GET.priority or request.GET.category %}
             <div>
                 <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Clear All</a>
             </div>
@@ -55,7 +37,6 @@
         </form>
     </div>
 </div>
-
     <div class="d-md-flex align-items-center mb-4">
       
       <div>
@@ -157,6 +138,151 @@
         {% endif %}
       </div>
     </div>
+
+    
+<!-- Sort Section - Clickable Sort Options -->
+<div class="card bg-light mb-4">
+    <div class="card-body">
+        <!-- Sort Header -->
+        <div class="d-flex justify-content-between align-items-center">
+            <h6 class="card-title mb-0">
+                <i class="ti ti-sort-descending me-2"></i>Sort By
+            </h6>
+            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#sortCollapse" aria-expanded="true" aria-controls="sortCollapse">
+                <i class="ti ti-chevron-up"></i> Hide
+            </button>
+        </div>
+
+        <!-- Sort Content - Expanded by Default -->
+        <div class="collapse show" id="sortCollapse">
+            <div class="mt-3 pt-3 border-top">
+                <!-- Date Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Date:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-created_at" 
+                           class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="ti ti-sort-descending me-1"></i>Newest First
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=created_at" 
+                           class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            <i class="ti ti-sort-ascending me-1"></i>Oldest First
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Title Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Title:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=title" 
+                           class="btn btn-sm {% if current_ordering == 'title' %}btn-info{% else %}btn-outline-info{% endif %}">
+                            <i class="ti ti-sort-a-z me-1"></i>Title A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-title" 
+                           class="btn btn-sm {% if current_ordering == '-title' %}btn-info{% else %}btn-outline-info{% endif %}">
+                            <i class="ti ti-sort-z-a me-1"></i>Title Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Status Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Status:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=status" 
+                           class="btn btn-sm {% if current_ordering == 'status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            <i class="ti ti-category me-1"></i>Status A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-status" 
+                           class="btn btn-sm {% if current_ordering == '-status' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                            <i class="ti ti-category me-1"></i>Status Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Priority Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Priority:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=priority__name" 
+                           class="btn btn-sm {% if current_ordering == 'priority__name' %}btn-success{% else %}btn-outline-success{% endif %}">
+                            <i class="ti ti-flag me-1"></i>Priority A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-priority__name" 
+                           class="btn btn-sm {% if current_ordering == '-priority__name' %}btn-success{% else %}btn-outline-success{% endif %}">
+                            <i class="ti ti-flag me-1"></i>Priority Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Category Sorting -->
+                <div class="mb-3">
+                    <small class="text-muted fw-bold d-block mb-2">By Category:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=category__name" 
+                           class="btn btn-sm {% if current_ordering == 'category__name' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                            <i class="ti ti-folders me-1"></i>Category A-Z
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-category__name" 
+                           class="btn btn-sm {% if current_ordering == '-category__name' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                            <i class="ti ti-folders me-1"></i>Category Z-A
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Due Date Sorting -->
+                <div class="mb-0">
+                    <small class="text-muted fw-bold d-block mb-2">By Due Date:</small>
+                    <div class="d-flex flex-wrap gap-1">
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=deadline" 
+                           class="btn btn-sm {% if current_ordering == 'deadline' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                            <i class="ti ti-calendar me-1"></i>Due Date (Soonest)
+                        </a>
+                        <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}ordering=-deadline" 
+                           class="btn btn-sm {% if current_ordering == '-deadline' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                            <i class="ti ti-calendar me-1"></i>Due Date (Latest)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Active Sort Display -->
+                {% if current_ordering and current_ordering != '-created_at' %}
+                <div class="mt-3 pt-3 border-top">
+                    <small class="text-muted">Current sort:</small>
+                    {% if current_ordering == '-created_at' %}
+                    <span class="badge bg-primary me-1">Newest First</span>
+                    {% elif current_ordering == 'created_at' %}
+                    <span class="badge bg-primary me-1">Oldest First</span>
+                    {% elif current_ordering == 'title' %}
+                    <span class="badge bg-info me-1">Title A-Z</span>
+                    {% elif current_ordering == '-title' %}
+                    <span class="badge bg-info me-1">Title Z-A</span>
+                    {% elif current_ordering == 'status' %}
+                    <span class="badge bg-warning me-1">Status A-Z</span>
+                    {% elif current_ordering == '-status' %}
+                    <span class="badge bg-warning me-1">Status Z-A</span>
+                    {% elif current_ordering == 'priority__name' %}
+                    <span class="badge bg-success me-1">Priority A-Z</span>
+                    {% elif current_ordering == '-priority__name' %}
+                    <span class="badge bg-success me-1">Priority Z-A</span>
+                    {% elif current_ordering == 'category__name' %}
+                    <span class="badge bg-secondary me-1">Category A-Z</span>
+                    {% elif current_ordering == '-category__name' %}
+                    <span class="badge bg-secondary me-1">Category Z-A</span>
+                    {% elif current_ordering == 'deadline' %}
+                    <span class="badge bg-danger me-1">Due Date (Soonest)</span>
+                    {% elif current_ordering == '-deadline' %}
+                    <span class="badge bg-danger me-1">Due Date (Latest)</span>
+                    {% endif %}
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.priority %}priority={{ request.GET.priority }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}" 
+                       class="btn btn-sm btn-outline-secondary ms-2">Reset to Default</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="table-responsive mt-4">
       <table class="table mb-0 text-nowrap varient-table align-middle fs-3">

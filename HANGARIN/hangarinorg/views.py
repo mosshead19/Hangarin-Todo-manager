@@ -12,6 +12,8 @@ from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 
+from django.db.models import Q
+
 class TaskUpdateView(UpdateView):
     model = Task
     fields = ['title', 'description', 'deadline', 'status', 'category', 'priority']
@@ -41,7 +43,6 @@ class TaskUpdateView(UpdateView):
         # Otherwise, handle the normal task update
         return super().post(request, *args, **kwargs)
 
-from django.db.models import Q
 
 class TaskListView(ListView):
     model = Task
@@ -66,7 +67,11 @@ class TaskListView(ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         query = self.request.GET.get('q')
+        status_filter = self.request.GET.get('status')
+        priority_filter = self.request.GET.get('priority')
+        category_filter = self.request.GET.get('category')
 
+        # Apply search filter
         if query:
             qs = qs.filter(
                 Q(title__icontains=query) |
@@ -74,13 +79,59 @@ class TaskListView(ListView):
                 Q(category__name__icontains=query) |
                 Q(priority__name__icontains=query)
             )
+
+        # Apply only ONE filter at a time (mutually exclusive)
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+        elif priority_filter:
+            qs = qs.filter(priority_id=priority_filter)
+        elif category_filter:
+            qs = qs.filter(category_id=category_filter)
+
         return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all()
-        context['priorities'] = Priority.objects.all()
+        
+        # Get all tasks for counts
+        all_tasks = Task.objects.all()
+        
+        # Status counts
+        context['all_tasks_count'] = all_tasks.count()
+        context['pending_count'] = all_tasks.filter(status='Pending').count()
+        context['in_progress_count'] = all_tasks.filter(status='In Progress').count()
+        context['completed_count'] = all_tasks.filter(status='Completed').count()
+        
+        # Priority counts
+        priorities = Priority.objects.all()
+        for priority in priorities:
+            priority.task_count = Task.objects.filter(priority=priority).count()
+        context['priorities'] = priorities
+        
+        # Category counts
+        categories = Category.objects.all()
+        for category in categories:
+            category.task_count = Task.objects.filter(category=category).count()
+        context['categories'] = categories
+        
+        # Current ordering
         context['current_ordering'] = self.request.GET.get('ordering', '-created_at')
+        
+        # Active filter names for display
+        priority_id = self.request.GET.get('priority')
+        if priority_id:
+            try:
+                context['active_priority_name'] = Priority.objects.get(id=priority_id).name
+            except Priority.DoesNotExist:
+                context['active_priority_name'] = "Unknown"
+                
+        category_id = self.request.GET.get('category')
+        if category_id:
+            try:
+                context['active_category_name'] = Category.objects.get(id=category_id).name
+            except Category.DoesNotExist:
+                context['active_category_name'] = "Unknown"
+        
         return context
     
   #TASK CRUD VIEWS  

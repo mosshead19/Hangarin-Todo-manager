@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="card">
+        <div class="card-body">
+            <!-- Search Form -->
+            <div class="card bg-light mb-4">
+                <div class="card-body">
+                    <form method="get" action="{% url 'category-list' %}" class="d-flex gap-2 align-items-end">
+                        <!-- Search Input -->
+                        <div class="flex-grow-1">
+                            <label class="form-label small text-muted">Search Categories</label>
+                            <input type="text" 
+                                   name="q" 
+                                   class="form-control" 
+                                   placeholder="Search by category name..." 
+                                   value="{{ request.GET.q }}">
+                        </div>
+                        
+                        <!-- Search Button -->
+                        <div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti ti-search me-1"></i>Search
+                            </button>
+                        </div>
+                        
+                        <!-- Clear Button -->
+                        {% if request.GET.q %}
+                        <div>
+                            <a href="{% url 'category-list' %}" class="btn btn-outline-secondary">Clear Search</a>
+                        </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Header Section -->
+            <div class="d-md-flex align-items-center mb-4">
+                <div>
+                    <h4 class="card-title">Categories</h4>
+                    <p class="card-subtitle">{{ categories.count }} category(s) found</p>
+                    {% if request.GET.q %}
+                    <p class="text-muted small">Search results for: "{{ request.GET.q }}"</p>
+                    {% endif %}
+                </div>
+                <div class="ms-auto">
+                    <a href="{% url 'category_create' %}" class="btn btn-primary">
+                        <i class="ti ti-plus me-1"></i>Add New Category
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+
+            <!-- Sort Options -->
+            <div class="d-flex gap-2 mb-3">
+                <small class="text-muted align-self-center">Sort by:</small>
+                <a href="?ordering=-created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                   class="btn btn-sm {% if current_ordering == '-created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="ti ti-sort-descending me-1"></i>Newest
+                </a>
+                <a href="?ordering=created_at{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                   class="btn btn-sm {% if current_ordering == 'created_at' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="ti ti-sort-ascending me-1"></i>Oldest
+                </a>
+                <a href="?ordering=name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                   class="btn btn-sm {% if current_ordering == 'name' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="ti ti-sort-a-z me-1"></i>Name A-Z
+                </a>
+                <a href="?ordering=-name{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+                   class="btn btn-sm {% if current_ordering == '-name' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                    <i class="ti ti-sort-z-a me-1"></i>Name Z-A
+                </a>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="table-responsive">
+                <table class="table mb-0 text-nowrap varient-table align-middle fs-3">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="px-0 text-muted">
+                                Category Name
+                                {% if current_ordering == 'name' %}↑{% elif current_ordering == '-name' %}↓{% endif %}
+                            </th>
+                            <th scope="col" class="px-0 text-muted">Tasks Count</th>
+                            <th scope="col" class="px-0 text-muted">
+                                Created Date
+                                {% if current_ordering == 'created_at' %}↑{% elif current_ordering == '-created_at' %}↓{% endif %}
+                            </th>
+                            <th scope="col" class="px-0 text-muted text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td class="px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="ti ti-folder text-primary fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ category.name }}</h6>
+                                        <a href="{% url 'category_tasks' category.id %}" class="text-muted small text-decoration-none">
+                                            View tasks in this category
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-0">
+                                <span class="badge bg-light text-dark fs-3">
+                                    {{ category.task_set.count }} task(s)
+                                </span>
+                            </td>
+                            <td class="px-0">
+                                <small class="text-muted">{{ category.created_at|date:"M d, Y" }}</small>
+                            </td>
+                            <td class="px-0 text-end">
+                                <div class="btn-group">
+                                    <a href="{% url 'category-update' category.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="ti ti-edit me-1"></i>Edit
+                                    </a>
+                                    <a href="{% url 'category-delete' category.id %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="ti ti-trash me-1"></i>Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4">
+                                <div class="py-5">
+                                    <i class="ti ti-folders text-muted fs-1"></i>
+                                    <p class="text-muted mt-3">
+                                        {% if request.GET.q %}
+                                        No categories found matching "{{ request.GET.q }}".
+                                        {% else %}
+                                        No categories found.
+                                        {% endif %}
+                                    </p>
+                                    <a href="{% url 'category_create' %}" class="btn btn-primary mt-2">
+                                        <i class="ti ti-plus me-1"></i>Create Your First Category
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.ordering %}&ordering={{ request.GET.ordering }}{% endif %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            <!-- Quick Stats -->
+            {% if categories %}
+            <div class="row mt-4 pt-3 border-top">
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h3 class="text-primary">{{ categories.count }}</h3>
+                            <p class="text-muted mb-0">Total Categories</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h3 class="text-warning">{{ total_tasks }}</h3>
+                            <p class="text-muted mb-0">Total Tasks</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h3 class="text-success">{{ average_tasks_per_category }}</h3>
+                            <p class="text-muted mb-0">Avg Tasks per Category</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
