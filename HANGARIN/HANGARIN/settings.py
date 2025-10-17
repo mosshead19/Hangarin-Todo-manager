@@ -156,6 +156,8 @@ ACCOUNT_SIGNUP_FIELDS = [
 "password1*",
 "password2*",
 ]
+
+
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True # logged-in users go to LOGIN_REDIRECT_URL
 
 

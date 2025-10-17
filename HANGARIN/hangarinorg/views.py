@@ -45,7 +45,7 @@ class TaskUpdateView(UpdateView):
         return super().post(request, *args, **kwargs)
 
 
-class TaskListView(ListView):
+class TaskListView(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
