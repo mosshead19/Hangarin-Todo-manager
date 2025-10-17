@@ -11,8 +11,9 @@ from django.urls import reverse
 from django.shortcuts import redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+
 
 class TaskUpdateView(UpdateView):
     model = Task
@@ -49,6 +50,10 @@ class TaskListView(ListView):
     template_name = 'index.html'
     context_object_name = 'tasks'
     paginate_by = 10
+
+     # redirects users who are not logged in
+    login_url = '/accounts/login/'
+    redirect_field_name = 'next'
 
     def get_ordering(self):
         allowed = [
