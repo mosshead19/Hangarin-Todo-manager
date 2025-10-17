@@ -1,5 +1,6 @@
 
 {% load static %}
+{% load pwa %}
 <!doctype html>
 <html lang="en">
 
@@ -9,6 +10,8 @@
   <title>Flexy Free Bootstrap Admin Template by WrapPixel</title>
   <link rel="shortcut icon" type="image/png" href="{% static 'images/logos/favicon.png' %}"/>
   <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
+  {% progressive_web_app_meta %}
+  
   
 </head>
 
@@ -43,6 +46,7 @@
           </div>
         </div>
         <!-- Sidebar navigation-->
+        
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
           <ul id="sidebarnav">
             <li class="nav-small-cap">

@@ -32,6 +32,7 @@ from hangarinorg import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('pwa.urls')),
     path('', views.TaskListView.as_view(), name='dashboard'),#tasklist=dashboard  # Your existing home
     path('task/create/', TaskCreateView.as_view(), name='task-create'),
     path('task/<int:pk>/edit/', TaskUpdateView.as_view(), name='task-update'),

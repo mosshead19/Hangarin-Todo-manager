@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 'allauth.socialaccount',
 'allauth.socialaccount.providers.google',
 'allauth.socialaccount.providers.github',
+'pwa',
 ]
 
 SITE_ID = 4 # production site (psusphere.pythonanywhere.com)
@@ -155,3 +156,39 @@ ACCOUNT_SIGNUP_FIELDS = [
 "password1*",
 "password2*",
 ]
+
+
+
+# --- Progressive Web App Settings ---
+PWA_APP_NAME = 'Hangarin'
+PWA_APP_DESCRIPTION = "A Progressive Web App version of ProjectSite"
+PWA_APP_THEME_COLOR = '#0A0A0A'
+PWA_APP_BACKGROUND_COLOR = '#FFFFFF'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+{
+'src': '/static/images/logos/icon.png',
+'sizes': '192x192'
+},
+{
+   
+'src': '/static/images/logos/icon.png',
+'sizes': '512x512'
+}
+]
+PWA_APP_ICONS_APPLE = [
+{
+'src': '/static/images/logos/icon.png',
+'sizes': '192x192'
+},
+{
+'src': '/static/images/logos/icon.png',
+'sizes': '512x512'
+}
+]
+PWA_APP_DIR = 'ltr'
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
