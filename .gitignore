@@ -50,6 +50,10 @@ coverage.xml
 .pytest_cache/
 cover/
 
+!libs/jquery/dist/
+!libs/simplebar/dist/
+!libs/apexcharts/dist/
+
 # Translations
 *.mo
 *.pot

@@ -1,6 +1,16 @@
 asgiref==3.9.1
+certifi==2025.10.5
+cffi==2.0.0
+charset-normalizer==3.4.4
+cryptography==46.0.2
 Django==5.2.5
+django-allauth==65.12.0
 django-widget-tweaks==1.5.0
 Faker==37.6.0
+idna==3.11
+pycparser==2.23
+PyJWT==2.10.1
+requests==2.32.5
 sqlparse==0.5.3
 tzdata==2025.2
+urllib3==2.5.0
